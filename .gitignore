@@ -1,0 +1,17 @@
+*.dll
+*.pdb
+*.exe
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.obj
+*.log
+*.tlog
+*.cache
+SaiPalHook/Notes.txt
+*.aps
+*.vcxproj
+*.filters
+*.user
+SaiPal/resource.h
