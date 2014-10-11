@@ -24,5 +24,8 @@ private:
 	std::vector<std::string> PrevCommands;
 	std::vector<std::string>::iterator PrevCommand;
 	std::string Command;
+	std::string PrevSuggestion;
+
+	//Sai Session
 	SaiSession Session;
 };

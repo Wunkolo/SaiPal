@@ -3,8 +3,9 @@
 #include <Windows.h>
 #include <conio.h> // _getch()
 #include <iomanip>
-#include <cctype>
+#include <cctype> //isprint
 
+#define ps1 ">["
 
 SaiPal::SaiPal()
 {
@@ -17,12 +18,33 @@ SaiPal::SaiPal()
 	std::cout << VersionStr;
 	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << " of PaintTool Sai" << std::endl;
+
+	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+		FOREGROUND_RED |
+		FOREGROUND_GREEN |
+		FOREGROUND_INTENSITY);
+	std::cout << ps1;
+	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+		FOREGROUND_BLUE |
+		FOREGROUND_GREEN |
+		FOREGROUND_INTENSITY);
+
+
 	::CreateDirectoryA("SaiPal", NULL);
 
+	//place holder
 	Commands.insert("history");
 	Commands.insert("canvas");
 	Commands.insert("capture");
-	Commands.insert("clear");
+	Commands.insert("color");
+	Commands.insert("clean");
+	Commands.insert("call");
+	Commands.insert("cook");
+	Commands.insert("install");
+	Commands.insert("obama");
+	Commands.insert("shellshock");
+	Commands.insert("apple");
+
 }
 
 SaiPal::~SaiPal()
@@ -33,55 +55,142 @@ SaiPal::~SaiPal()
 void SaiPal::Tick(std::chrono::duration<double> Delta)
 {
 	PrintConsole();
+	static double Timer = 0;
+	Timer += Delta.count();
+	if (Timer >= (1 / 24.0))//24 Hz
+	{
+		Session.SetPrimaryColor(rand(), rand(), rand());
+		Timer = 0;
+	}
 }
 
 void SaiPal::PrintConsole()
 {
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-		FOREGROUND_RED |
-		FOREGROUND_GREEN |
-		FOREGROUND_INTENSITY);
-	std::cout << std::setw(2) << ">[";
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-		FOREGROUND_BLUE |
-		FOREGROUND_GREEN |
-		FOREGROUND_INTENSITY);
-	std::cout << Command;
 	if (_kbhit())
 	{
 		int Key = _getch();
 		//std::cout << std::endl << std::hex << Key << std::endl;
 		if (std::isprint(Key))
 		{
-			Command.append(1, Key);
+			Command.push_back(Key);
+			::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+				FOREGROUND_BLUE |
+				FOREGROUND_GREEN |
+				FOREGROUND_INTENSITY);
+			std::cout << (char)Key;
+
+			//Clear previous suggestion
+			for (unsigned int i = Command.length();
+				i < PrevSuggestion.length();
+				i++)
+			{
+				std::cout << " ";
+			}
+			for (unsigned int i = Command.length();
+				i < PrevSuggestion.length();
+				i++)
+			{
+				std::cout << "\b";
+			}
+			PrevSuggestion.clear();
+
+			std::vector<std::string> Suggest;
+			for (std::set<std::string>::iterator it = Commands.begin(); it != Commands.end(); ++it)
+			{
+				if (!Command.compare(0, Command.length(), (*it), 0, Command.length()))//includes command
+				{
+					Suggest.push_back((*it));
+				}
+			}
+			if (Suggest.size() == 1)
+			{
+				PrevSuggestion = Suggest[0];
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_BLUE |
+					FOREGROUND_GREEN);
+				std::cout << Suggest[0].substr(Command.length(),std::string::npos);
+
+				//move back to end of input char
+				for (unsigned int i = Command.length();
+					i < Suggest[0].length();
+					i++)
+				{
+					std::cout << "\b";
+				}
+			}
+			Suggest.clear();
+
 		}
 		else if (Key == '\b')
 		{
 			if (!Command.empty())
 			{
 				Command.pop_back();
+				std::cout << "\b \b";
 			}
-			std::cout << "\b \b";
+			if (!PrevSuggestion.empty())
+			{
+				//Clear previous suggestion
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << " ";
+				}
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << "\b";
+				}
+				PrevSuggestion.clear();
+			}
 		}
 		else if (Key == '\r')
 		{
 			//enter
 			if (!Command.empty())
 			{
+				//Clear previous suggestion
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << " ";
+				}
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << "\b";
+				}
+				PrevSuggestion.clear();
+
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 					FOREGROUND_RED |
 					FOREGROUND_GREEN |
 					FOREGROUND_INTENSITY);
-				std::cout << "]" << std::endl;
+				std::cout << '\r' << ps1;
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_BLUE |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
+				std::cout << Command;
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_RED |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
+				std::cout << ']' << std::endl;
 				//process command and execute it
-				if (Commands.find(Command) != Commands.end() && false)
-				{
-					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-						FOREGROUND_GREEN |
-						FOREGROUND_INTENSITY);
-					std::cout << "command executed" << std::endl;
-				}
-				else if (!Command.compare("canvas"))
+				//if (Commands.find(Command) != Commands.end())
+				//{
+				//	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+				//		FOREGROUND_GREEN |
+				//		FOREGROUND_INTENSITY);
+				//	std::cout << "Command executed" << std::endl;
+				//}
+				//else 
+				if (!Command.compare("canvas"))
 				{
 					if (Session.ActiveCanvas()[0])
 					{
@@ -130,13 +239,39 @@ void SaiPal::PrintConsole()
 						std::cout << "No active canvas" << std::endl;
 					}
 				}
-				else
+				else if (!Command.compare("color"))
 				{
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-					std::cout << "Unknown command: " << Command << std::endl;
+					Color curColor = Session.GetPrimaryColor();
+					std::cout << "Current Color: " <<
+						(curColor.R >> 8) << ", " <<
+						(curColor.G >> 8) << ", " <<
+						(curColor.B >> 8) << std::endl;
+				}
+				else if (!Command.compare("history"))
+				{
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_RED |
+						FOREGROUND_GREEN);
+					std::cout << "Previous commands:" << std::endl;
+					std::vector<std::string>::iterator it;
+					for (it = PrevCommands.begin();
+						it != PrevCommands.end();
+						++it)
+					{
+						std::cout << " -" << *it << std::endl;
+					}
 				}
 				PrevCommands.push_back(Command);
 				PrevCommand = PrevCommands.end();
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_RED |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
+				std::cout << ps1;
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_BLUE |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
 				Command.clear();
 			}
 		}
@@ -145,8 +280,20 @@ void SaiPal::PrintConsole()
 			//auto complete
 			if (!Command.empty())
 			{
-				std::cout << "*" << std::endl;
-				std::string Match = Command;
+				//Clear previous suggestion
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << " ";
+				}
+				for (unsigned int i = Command.length();
+					i < PrevSuggestion.length();
+					i++)
+				{
+					std::cout << "\b";
+				}
+				PrevSuggestion.clear();
 
 				//Populate possible matches
 				std::vector<std::string> Matches;
@@ -160,6 +307,7 @@ void SaiPal::PrintConsole()
 				//Calculate common prefix if there are matches
 				if (Matches.size() > 1)
 				{
+					std::cout << std::endl;
 					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 						FOREGROUND_RED |
 						FOREGROUND_GREEN);
@@ -193,21 +341,39 @@ void SaiPal::PrintConsole()
 						}
 						Prefix = Temp;
 					}
-					Match = Prefix;
+					Command = Prefix;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_RED |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << ps1;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_BLUE |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << Command;
 				}
-				else if (Matches.size() == 1)
+				else if (Matches.size() == 1 && Matches[0].compare(Command) != 0)
 				{
-					Match = Matches[0];
+					Command = Matches[0];
+					for (unsigned int i = 0;
+						i < Command.length();
+						i++)
+					{
+						std::cout << "\b \b";
+					}
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_RED |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << '\r' << ps1;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_BLUE |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << Command;
 				}
 				Matches.clear();
-				//backspace
-				for (unsigned int i = 0;
-					i < Command.length();
-					i++)
-				{
-					std::cout << "\b \b";
-				}
-				Command = Match;
 			}
 			else
 			{
@@ -221,6 +387,16 @@ void SaiPal::PrintConsole()
 				{
 					std::cout << " -" << *it << std::endl;
 				}
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_RED |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
+				std::cout << ps1;
+				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+					FOREGROUND_BLUE |
+					FOREGROUND_GREEN |
+					FOREGROUND_INTENSITY);
+				std::cout << Command;
 			}
 		}
 		else if (Key == 0 || Key == 0xe0)//escape character
@@ -231,6 +407,20 @@ void SaiPal::PrintConsole()
 				//up
 				if (!PrevCommands.empty())
 				{
+					//Clear previous suggestion
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << " ";
+					}
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << "\b";
+					}
+					PrevSuggestion.clear();
 					//backspace
 					for (unsigned int i = 0;
 						i < Command.length();
@@ -244,6 +434,16 @@ void SaiPal::PrintConsole()
 						PrevCommand--;
 					}
 					Command = *PrevCommand;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_RED |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << '\r' << ps1;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_BLUE |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << Command;
 				}
 			}
 			else if (Func == 0x50)
@@ -251,6 +451,20 @@ void SaiPal::PrintConsole()
 				//down
 				if (!PrevCommands.empty())
 				{
+					//Clear previous suggestion
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << " ";
+					}
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << "\b";
+					}
+					PrevSuggestion.clear();
 					//backspace
 					for (unsigned int i = 0;
 						i < Command.length();
@@ -258,12 +472,39 @@ void SaiPal::PrintConsole()
 					{
 						std::cout << "\b \b";
 					}
+					PrevSuggestion.clear();
 					//use previous command
 					if (PrevCommand != PrevCommands.end())
 					{
 						PrevCommand++;
 					}
 					Command = *PrevCommand;
+
+					//Clear previous suggestion
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << " ";
+					}
+					for (unsigned int i = Command.length();
+						i < PrevSuggestion.length();
+						i++)
+					{
+						std::cout << "\b";
+					}
+
+
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_RED |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << '\r' << ps1;
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+						FOREGROUND_BLUE |
+						FOREGROUND_GREEN |
+						FOREGROUND_INTENSITY);
+					std::cout << Command;
 				}
 			}
 			else if (Func = 0x4B)
@@ -279,6 +520,7 @@ void SaiPal::PrintConsole()
 				std::cout << "Unknown function Key" << std::endl;
 			}
 		}
+		std::cout.flush();
 	}
-	std::cout << '\r';
+	//std::cout << '\r';
 }
