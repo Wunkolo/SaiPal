@@ -15,3 +15,5 @@ SaiPalHook/Notes.txt
 *.filters
 *.user
 SaiPal/resource.h
+SaiPal/SaiPal.rc
+SaiPal/icon1.ico
