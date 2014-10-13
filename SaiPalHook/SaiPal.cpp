@@ -19,6 +19,22 @@ SaiPal::SaiPal()
 	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << " of PaintTool Sai" << std::endl;
 
+	unsigned int ConsoleWidth = 80;
+	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
+	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleBuf))
+	{
+		ConsoleWidth = ConsoleBuf.dwSize.X;
+	}
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+		FOREGROUND_RED |
+		FOREGROUND_BLUE);
+	std::cout << std::string(ConsoleWidth - 1, '=') << std::endl;
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+		FOREGROUND_RED |
+		FOREGROUND_GREEN |
+		FOREGROUND_INTENSITY);
+
+
 	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 		FOREGROUND_RED |
 		FOREGROUND_GREEN |
@@ -42,7 +58,7 @@ SaiPal::~SaiPal()
 {
 }
 
-void SaiPal::Tick(std::chrono::duration<double> Delta)
+void SaiPal::Tick(const std::chrono::duration<double> Delta)
 {
 	PrintConsole();
 	static double Timer = 0;
@@ -501,10 +517,9 @@ void SaiPal::PrintConsole()
 			}
 			else
 			{
-				std::cout << "Unknown function Key" << std::endl;
+				//Unknown function key
 			}
 		}
 		std::cout.flush();
 	}
-	//std::cout << '\r';
 }

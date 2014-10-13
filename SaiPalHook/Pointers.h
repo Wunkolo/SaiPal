@@ -33,9 +33,6 @@ public:
 		{
 			if ((unsigned int*)((char*)_Pointer + Offset))
 			{
-				//std::cout << std::hex;
-				//std::cout << "Resolving: (" << _Pointer << " + " << Offset << ") " << (unsigned int*)((char*)_Pointer + Offset) << std::endl;
-				//std::cout << "Value is : " << *(unsigned int*)((char*)_Pointer + Offset) << std::endl;
 				return Pointer(*(unsigned int*)((char*)_Pointer + Offset));
 			}
 		}
@@ -58,7 +55,7 @@ public:
 		return T();
 	}
 
-	//Returns the position of the pointer offset by a number of bytes
+	//Returns the position of the pointer offset by a number of bytes(or stride value)
 	inline Pointer operator() (unsigned int Offset = 0, unsigned int Stride = 1) const
 	{
 		return Pointer((unsigned char*)_Pointer + (Offset*Stride));

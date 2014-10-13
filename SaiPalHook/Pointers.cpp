@@ -20,16 +20,13 @@ void* GetModuleBase()
 
 void* GetModuleBase(const std::string& ModuleName)
 {
-	MODULEENTRY32 lpModuleEntry;
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(
 		TH32CS_SNAPMODULE,
 		GetCurrentProcessId());
 	if (hSnapShot == INVALID_HANDLE_VALUE) {
 		return 0;
 	}
-
-	if (!hSnapShot)
-		return 0;
+	MODULEENTRY32 lpModuleEntry;
 	lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
 	BOOL bModule = Module32First(hSnapShot, &lpModuleEntry);
 	while (bModule)

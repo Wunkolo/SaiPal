@@ -4,9 +4,10 @@
 #include <chrono>
 
 #include "SaiPalConfig.h"
-#include "SaiSession.h"
 
 #include "Singleton.h"
+#include "SaiSession.h"
+
 
 class SaiPal : public Singleton < SaiPal >
 {
@@ -14,7 +15,7 @@ public:
 	SaiPal();
 	~SaiPal();
 
-	void Tick(std::chrono::duration<double> Delta);
+	void Tick(const std::chrono::duration<double> Delta);
 
 private:
 	//Console

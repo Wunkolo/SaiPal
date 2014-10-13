@@ -1,7 +1,6 @@
 #include "SaiCanvas.h"
 
 #include "SaiPalConfig.h"
-#include <iostream>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -19,7 +18,7 @@ SaiCanvas::~SaiCanvas()
 {
 }
 
-std::string SaiCanvas::GetName()
+std::string SaiCanvas::GetName() const
 {
 #if defined(SAI120)
 	return std::string((char*)Canvas(0x5d8));

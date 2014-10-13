@@ -11,7 +11,7 @@ public:
 	SaiCanvas(const Pointer Canvas);
 	~SaiCanvas();
 
-	std::string GetName();
+	std::string GetName() const;
 
 	bool CaptureImage(const std::string Path);
 
