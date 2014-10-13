@@ -1,5 +1,3 @@
-#define _CRT_SECURE_NO_DEPRECATE
-
 #include <windows.h>
 #include <iostream>
 #include <iomanip>
@@ -12,73 +10,7 @@
 #include <chrono>
 typedef std::chrono::high_resolution_clock Clock;
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 #include "SaiPal.h"
-
-void SaveCanvasImage(Pointer Canvas)
-{
-	if (!Canvas)
-	{
-		return;
-	}
-
-#if defined(SAI120)
-	Canvas = Canvas(0x100);
-#endif
-
-	//std::cout << "Saving canvas: " << (void*)Canvas << std::endl;
-	std::string CanvasName((char*)Canvas(0x4d8));
-	CanvasName = CanvasName.substr(
-		CanvasName.find_last_of('\\') == std::string::npos ? 0 : CanvasName.find_last_of('\\') + 1,
-		std::string::npos);
-	CanvasName.erase(CanvasName.begin() + CanvasName.find_last_of('.'), CanvasName.end());
-	::CreateDirectoryA(std::string("SaiPal\\" + CanvasName).c_str(), NULL);
-
-	CanvasName = "SaiPal\\" + CanvasName + "\\" + CanvasName;
-
-	SYSTEMTIME st;
-	GetSystemTime(&st);
-
-	CanvasName += " (" + std::to_string(std::time(nullptr)) + "_" + std::to_string(st.wMilliseconds) + ")";
-	CanvasName += ".png";
-
-#if defined(SAI120)
-	Canvas = Canvas(-0x100);
-#endif
-	unsigned int LowerPadX = Canvas(0x114).asUint();
-	unsigned int LowerPadY = Canvas(0x118).asUint();
-	//unsigned int HigherPadX = Canvas(0x11C).asUint();
-	//unsigned int HigherPadY = Canvas(0x120).asUint();
-	unsigned int Width = Canvas(0x124).asUint();
-	unsigned int Height = Canvas(0x128).asUint();
-
-	unsigned int * Buffer = new unsigned int[Width*Height];
-
-	Pointer PixelHeap = Canvas[0x30];
-
-	unsigned int StrideX = PixelHeap(1, sizeof(int)).asUint();
-	//unsigned int StrideY = PixelHeap(2,sizeof(int)).asUint();
-	PixelHeap = PixelHeap[0xC];
-
-	for (unsigned int x = LowerPadX; x < Width; x++)
-	{
-		for (unsigned int y = LowerPadX; y < Height; y++)
-		{
-			unsigned int Pixel =
-				PixelHeap(x + y * StrideX, sizeof(int)).asUint();
-			//BGRA to RGBA(Little endian)
-			Pixel = ((Pixel & 0x00ff0000) >> 16) | //Blue
-				((Pixel & 0x000000ff) << 16) |     //Red
-				(Pixel & 0xff00ff00);              //Green+Alpha
-			Buffer[Width * y + x] = Pixel;
-		}
-	}
-	stbi_write_png(CanvasName.c_str(), Width, Height, 4, Buffer, 0);
-	delete[] Buffer;
-	std::cout << "Saved Canvas to: " << CanvasName << std::endl;
-}
 
 void ProcessLayerList(void* Layer, unsigned char TabLevel = 0)
 {

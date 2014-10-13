@@ -2,7 +2,6 @@
 
 //config options varying between sai versions;
 
-
 #if defined(SAI120)
 #define VersionStr "1.2.0"
 #define SESSION 0x49098C

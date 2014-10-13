@@ -29,7 +29,6 @@ SaiPal::SaiPal()
 		FOREGROUND_GREEN |
 		FOREGROUND_INTENSITY);
 
-
 	::CreateDirectoryA("SaiPal", NULL);
 
 	//place holder
@@ -37,19 +36,10 @@ SaiPal::SaiPal()
 	Commands.insert("canvas");
 	Commands.insert("capture");
 	Commands.insert("color");
-	Commands.insert("clean");
-	Commands.insert("call");
-	Commands.insert("cook");
-	Commands.insert("install");
-	Commands.insert("obama");
-	Commands.insert("shellshock");
-	Commands.insert("apple");
-
 }
 
 SaiPal::~SaiPal()
 {
-
 }
 
 void SaiPal::Tick(std::chrono::duration<double> Delta)
@@ -59,7 +49,10 @@ void SaiPal::Tick(std::chrono::duration<double> Delta)
 	Timer += Delta.count();
 	if (Timer >= (1 / 24.0))//24 Hz
 	{
-		Session.SetPrimaryColor(rand(), rand(), rand());
+		//Random colors: 24 Hz
+		//place holder
+		//Session.SetPrimaryColor(rand(), rand(), rand());
+		Session.SetSecondaryColor(rand(), rand(), rand());
 		Timer = 0;
 	}
 }
@@ -108,7 +101,7 @@ void SaiPal::PrintConsole()
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 					FOREGROUND_BLUE |
 					FOREGROUND_GREEN);
-				std::cout << Suggest[0].substr(Command.length(),std::string::npos);
+				std::cout << Suggest[0].substr(Command.length(), std::string::npos);
 
 				//move back to end of input char
 				for (unsigned int i = Command.length();
@@ -119,7 +112,6 @@ void SaiPal::PrintConsole()
 				}
 			}
 			Suggest.clear();
-
 		}
 		else if (Key == '\b')
 		{
@@ -189,23 +181,13 @@ void SaiPal::PrintConsole()
 				//		FOREGROUND_INTENSITY);
 				//	std::cout << "Command executed" << std::endl;
 				//}
-				//else 
+				//else
 				if (!Command.compare("canvas"))
 				{
 					if (Session.ActiveCanvas()[0])
 					{
-						Pointer ThisCanvas = Session.ActiveCanvas()[0];
-#if defined(SAI120)
-							ThisCanvas = ThisCanvas(0x100);
-#endif
-							std::string CanvasName((char*)ThisCanvas(0x4d8));
-#if defined(SAI120)
-							ThisCanvas = ThisCanvas(-0x100);
-#endif
-							unsigned int Width = ThisCanvas(0x124).asUint();
-							unsigned int Height = ThisCanvas(0x128).asUint();
-
-							std::cout << CanvasName << " : " << Width << "x" << Height << std::endl;
+						SaiCanvas Canvas(Session.ActiveCanvas()[0]);
+						std::cout << Canvas.GetName() << " : " << Canvas.Width() << "x" << Canvas.Height() << std::endl;
 					}
 					else
 					{
@@ -216,28 +198,31 @@ void SaiPal::PrintConsole()
 				{
 					if (Session.ActiveCanvas()[0])
 					{
-						Pointer ThisCanvas = Session.ActiveCanvas()[0];
-#if defined(SAI120)
-						ThisCanvas = ThisCanvas(0x100);
-#endif
-						std::string CanvasName((char*)ThisCanvas(0x4d8));
-						CanvasName = CanvasName.substr(
-							CanvasName.find_last_of('\\') == std::string::npos ? 0 : CanvasName.find_last_of('\\') + 1,
+						SaiCanvas Canvas(Session.ActiveCanvas()[0]);
+						std::string Path = Canvas.GetName();
+						Path = Path.substr(
+							Path.find_last_of('\\') == std::string::npos ? 0 : Path.find_last_of('\\') + 1,
 							std::string::npos);
-						CanvasName.erase(CanvasName.begin() + CanvasName.find_last_of('.'), CanvasName.end());
-						CanvasName = "SaiPal\\" + CanvasName + "\\" + CanvasName;
+						Path.erase(Path.begin() + Path.find_last_of('.'), Path.end());
+						::CreateDirectory(std::string("SaiPal\\" + Path).c_str(), 0);
+						Path = "SaiPal\\" + Path + "\\" + Path;
 
-						SYSTEMTIME st;
-						GetSystemTime(&st);
+						LARGE_INTEGER time;
+						QueryPerformanceCounter(&time);
 
-						CanvasName += " (" + std::to_string(std::time(nullptr)) + "_" + std::to_string(st.wMilliseconds) + ")";
-						CanvasName += ".png";
-						std::cout << CanvasName << std::endl;
+						Path += " [" + std::to_string(time.QuadPart) + "]";
+						Path += ".png";
+
+						std::cout << "Capturing canvas to: " << Path << " [" << (Canvas.CaptureImage(Path) ? "Success" : "Failed") << std::endl;
 					}
 					else
 					{
 						std::cout << "No active canvas" << std::endl;
 					}
+				}
+				else if (!Command.compare("new"))
+				{
+					std::cout << "New canvas: " << (void*)Session.NewCanvas("Honk") << std::endl;
 				}
 				else if (!Command.compare("color"))
 				{
@@ -493,7 +478,6 @@ void SaiPal::PrintConsole()
 					{
 						std::cout << "\b";
 					}
-
 
 					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 						FOREGROUND_RED |

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <set>
 #include <vector>
 #include <chrono>
@@ -9,7 +8,7 @@
 
 #include "Singleton.h"
 
-class SaiPal : public Singleton<SaiPal>
+class SaiPal : public Singleton < SaiPal >
 {
 public:
 	SaiPal();

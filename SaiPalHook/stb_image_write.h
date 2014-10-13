@@ -48,7 +48,6 @@ formats do not. (Thus you cannot write a native-format BMP through the BMP
 writer, both because it is in BGR order and because it may have padding
 at the end of the line.)
 */
-
 #ifndef INCLUDE_STB_IMAGE_WRITE_H
 #define INCLUDE_STB_IMAGE_WRITE_H
 

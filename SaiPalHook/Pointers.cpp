@@ -20,7 +20,7 @@ void* GetModuleBase()
 
 void* GetModuleBase(const std::string& ModuleName)
 {
-	MODULEENTRY32 lpModuleEntry = { 0 };
+	MODULEENTRY32 lpModuleEntry;
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(
 		TH32CS_SNAPMODULE,
 		GetCurrentProcessId());
