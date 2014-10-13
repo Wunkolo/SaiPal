@@ -23,10 +23,10 @@ public:
 		unsigned int Height = 500,
 		unsigned short Args = 1);
 
-	Color GetPrimaryColor();
+	Color GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);
 	void SetPrimaryColor(const Color& NewColor);
-	Color GetSecondaryColor();
+	Color GetSecondaryColor() const;
 	void SetSecondaryColor(unsigned char R, unsigned char G, unsigned char B);
 	void SetSecondaryColor(const Color& NewColor);
 private:

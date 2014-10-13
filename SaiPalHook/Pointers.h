@@ -27,7 +27,7 @@ public:
 
 	//Resolves offsets the current pointer by the offset and picks up the 4 byte integer value
 	// at the new location and returns it as a new pointer object
-	Pointer operator [](const unsigned int Offset) const
+	inline Pointer operator [](const unsigned int Offset) const
 	{
 		if (_Pointer)
 		{
@@ -43,13 +43,13 @@ public:
 	}
 
 	template <typename T>
-	T* operator ->() const
+	inline T* operator ->() const
 	{
 		return (T*)_Pointer;
 	}
 
 	template <typename T>
-	T as() const
+	inline T as() const
 	{
 		if (_Pointer)
 		{
@@ -59,51 +59,51 @@ public:
 	}
 
 	//Returns the position of the pointer offset by a number of bytes
-	Pointer operator() (unsigned int Offset = 0, unsigned int Stride = 1)
+	inline Pointer operator() (unsigned int Offset = 0, unsigned int Stride = 1) const
 	{
 		return Pointer((unsigned char*)_Pointer + (Offset*Stride));
 	}
 
 	//Assignment
 	template <class T>
-	void operator= (T* Pointer)
+	inline void operator= (T* Pointer)
 	{
 		_Pointer = (void*)Pointer;
 	}
 
-	void operator= (Pointer Pointer)
+	inline void operator= (Pointer Pointer)
 	{
 		_Pointer = Pointer._Pointer;
 	}
 
 	//Implicit cast to any other pointer type
 	template <class T>
-	operator T* () const
+	inline operator T* () const
 	{
 		return (T*)_Pointer;
 	}
 
-	operator bool() const
+	inline operator bool() const
 	{
 		return _Pointer != nullptr ? true : false;
 	}
 
-	unsigned int asUint()
+	inline unsigned int asUint() const
 	{
 		return as<unsigned int>();
 	}
 
-	unsigned short asUShort()
+	inline unsigned short asUShort() const
 	{
 		return as<unsigned short>();
 	}
 
-	unsigned char asUchar()
+	inline unsigned char asUchar() const
 	{
 		return as<unsigned char>();
 	}
 
-	void Set(unsigned int Pointer)
+	inline void Set(unsigned int Pointer)
 	{
 		_Pointer = (void*)Pointer;
 	}

@@ -53,7 +53,7 @@ Pointer SaiSession::NewCanvas(std::string CanvasName,
 	return nullptr;
 }
 
-Color SaiSession::GetPrimaryColor()
+Color SaiSession::GetPrimaryColor() const
 {
 	return Session(0x874).as<Color>();
 }
@@ -68,7 +68,7 @@ void SaiSession::SetPrimaryColor(const Color& NewColor)
 	*(Color*)Session(0x874) = NewColor;
 }
 
-Color SaiSession::GetSecondaryColor()
+Color SaiSession::GetSecondaryColor() const
 {
 	return Session(0x87C).as<Color>();
 }

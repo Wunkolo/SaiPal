@@ -10,7 +10,7 @@ SaiCanvas::SaiCanvas()
 {
 }
 
-SaiCanvas::SaiCanvas(Pointer Canvas)
+SaiCanvas::SaiCanvas(const Pointer Canvas)
 {
 	this->Canvas = Canvas;
 }
@@ -40,10 +40,7 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	unsigned int LowerPadY = Canvas(0x118).asUint();
 	//unsigned int HigherPadX = Canvas(0x11C).asUint();
 	//unsigned int HigherPadY = Canvas(0x120).asUint();
-	unsigned int Width = Canvas(0x124).asUint();
-	unsigned int Height = Canvas(0x128).asUint();
-
-	unsigned int * Buffer = new unsigned int[Width*Height];
+	unsigned int * Buffer = new unsigned int[Width()*Height()];
 
 	Pointer PixelHeap = Canvas[0x30];
 
@@ -51,9 +48,9 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	//unsigned int StrideY = PixelHeap(2, sizeof(int)).asUint();
 	PixelHeap = PixelHeap[0xC];
 
-	for (unsigned int x = 0; x < Width; x++)
+	for (unsigned int x = 0; x < Width(); x++)
 	{
-		for (unsigned int y = 0; y < Height; y++)
+		for (unsigned int y = 0; y < Height(); y++)
 		{
 			unsigned int Pixel =
 				PixelHeap((x + LowerPadX) + (y + LowerPadY) * StrideX, sizeof(int)).asUint();
@@ -61,10 +58,10 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 			Pixel = ((Pixel & 0x00ff0000) >> 16) | //Blue
 				((Pixel & 0x000000ff) << 16) |     //Red
 				(Pixel & 0xff00ff00);              //Green+Alpha
-			Buffer[Width * y + x] = Pixel;
+			Buffer[Width() * y + x] = Pixel;
 		}
 	}
-	if (stbi_write_png(Path.c_str(), Width, Height, 4, Buffer, 0))
+	if (stbi_write_png(Path.c_str(), Width(), Height(), 4, Buffer, 0))
 	{
 		return true;
 	}
@@ -72,12 +69,12 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	return false;
 }
 
-unsigned int SaiCanvas::Width()
+unsigned int SaiCanvas::Width() const
 {
 	return Canvas(0x124).asUint();
 }
 
-unsigned int SaiCanvas::Height()
+unsigned int SaiCanvas::Height() const
 {
 	return Canvas(0x128).asUint();
 }

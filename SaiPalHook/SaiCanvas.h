@@ -8,15 +8,15 @@ class SaiCanvas
 {
 public:
 	SaiCanvas();
-	SaiCanvas(Pointer Canvas);
+	SaiCanvas(const Pointer Canvas);
 	~SaiCanvas();
 
 	std::string GetName();
 
 	bool CaptureImage(const std::string Path);
 
-	unsigned int Width();
-	unsigned int Height();
+	inline unsigned int Width() const;
+	inline unsigned int Height() const;
 
 private:
 	Pointer Canvas;
