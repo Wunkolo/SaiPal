@@ -1,5 +1,3 @@
-
-
 /*-
 *  COPYRIGHT (C) 1986 Gary S. Brown.  You may use this program, or
 *  code or tables extracted from it, as desired without restriction.
@@ -95,8 +93,8 @@ unsigned int crc32(unsigned int crc, const void *buf, unsigned int size)
 	p = (unsigned char*)buf;
 	crc = crc ^ ~0U;
 
-	while (size--)
-		crc = crc32_tab[(crc ^ *p++) & 0xFF] ^ (crc >> 8);
+	while( size-- )
+		crc = crc32_tab[(crc ^ *p++)&0xFF]^(crc>>8);
 
 	return crc ^ ~0U;
 }

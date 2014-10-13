@@ -19,9 +19,9 @@ public:
 	//May be null. Resolve([0]) to verify
 	Pointer ActiveCanvas();
 	Pointer NewCanvas(std::string CanvasName,
-		unsigned int Width = 500,
-		unsigned int Height = 500,
-		unsigned short Args = 1);
+					  unsigned int Width = 500,
+					  unsigned int Height = 500,
+					  unsigned short Args = 1);
 
 	Color GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);

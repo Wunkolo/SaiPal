@@ -29,11 +29,11 @@ public:
 	// at the new location and returns it as a new pointer object
 	inline Pointer operator [](const unsigned int Offset) const
 	{
-		if (_Pointer)
+		if( _Pointer )
 		{
-			if ((unsigned int*)((char*)_Pointer + Offset))
+			if( (unsigned int*)((char*)_Pointer+Offset) )
 			{
-				return Pointer(*(unsigned int*)((char*)_Pointer + Offset));
+				return Pointer(*(unsigned int*)((char*)_Pointer+Offset));
 			}
 		}
 		return Pointer(nullptr);
@@ -48,7 +48,7 @@ public:
 	template <typename T>
 	inline T as() const
 	{
-		if (_Pointer)
+		if( _Pointer )
 		{
 			return *(T*)_Pointer;
 		}
@@ -58,7 +58,7 @@ public:
 	//Returns the position of the pointer offset by a number of bytes(or stride value)
 	inline Pointer operator() (unsigned int Offset = 0, unsigned int Stride = 1) const
 	{
-		return Pointer((unsigned char*)_Pointer + (Offset*Stride));
+		return Pointer((unsigned char*)_Pointer+(Offset*Stride));
 	}
 
 	//Assignment
@@ -82,7 +82,7 @@ public:
 
 	inline operator bool() const
 	{
-		return _Pointer != nullptr ? true : false;
+		return _Pointer!=nullptr ? true : false;
 	}
 
 	inline unsigned int asUint() const

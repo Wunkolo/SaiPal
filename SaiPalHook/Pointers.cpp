@@ -7,7 +7,7 @@ void* GetModuleBase()
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(
 		TH32CS_SNAPMODULE,
 		GetCurrentProcessId());
-	if (hSnapShot == INVALID_HANDLE_VALUE)
+	if( hSnapShot==INVALID_HANDLE_VALUE )
 	{
 		return nullptr;
 	}
@@ -15,7 +15,7 @@ void* GetModuleBase()
 	lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
 	int bRet = Module32First(hSnapShot, &lpModuleEntry);
 	CloseHandle(hSnapShot);
-	return (bRet != 0) ? (void*)lpModuleEntry.modBaseAddr : nullptr;
+	return (bRet!=0) ? (void*)lpModuleEntry.modBaseAddr : nullptr;
 }
 
 void* GetModuleBase(const std::string& ModuleName)
@@ -23,16 +23,17 @@ void* GetModuleBase(const std::string& ModuleName)
 	HANDLE hSnapShot = CreateToolhelp32Snapshot(
 		TH32CS_SNAPMODULE,
 		GetCurrentProcessId());
-	if (hSnapShot == INVALID_HANDLE_VALUE) {
+	if( hSnapShot==INVALID_HANDLE_VALUE )
+	{
 		return 0;
 	}
 	MODULEENTRY32 lpModuleEntry;
 	lpModuleEntry.dwSize = sizeof(MODULEENTRY32);
 	BOOL bModule = Module32First(hSnapShot, &lpModuleEntry);
-	while (bModule)
+	while( bModule )
 	{
 		//If module name matches: return it
-		if (!ModuleName.compare(lpModuleEntry.szModule))
+		if( !ModuleName.compare(lpModuleEntry.szModule) )
 		{
 			CloseHandle(hSnapShot);
 			return (void*)lpModuleEntry.modBaseAddr;

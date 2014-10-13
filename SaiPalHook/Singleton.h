@@ -10,8 +10,14 @@ public:
 		return Inst;
 	}
 protected:
-	Singleton(){};
+	Singleton()
+	{
+	};
 private:
-	Singleton(Singleton const&){};//Prevent copying
-	void operator=(Singleton const&){}; //prevent assignment
+	Singleton(Singleton const&)
+	{
+	};//Prevent copying
+	void operator=(Singleton const&)
+	{
+	}; //prevent assignment
 };

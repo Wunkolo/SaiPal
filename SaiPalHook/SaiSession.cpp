@@ -30,9 +30,9 @@ Pointer SaiSession::ActiveCanvas()
 }
 
 Pointer SaiSession::NewCanvas(std::string CanvasName,
-	unsigned int Width,
-	unsigned int Height,
-	unsigned short Args)
+							  unsigned int Width,
+							  unsigned int Height,
+							  unsigned short Args)
 {
 #if defined(SAI120)
 	//void*(cdecl *CreateCanvas)(void* Session,int width, int height, short flags,const char* name) =

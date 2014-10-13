@@ -31,7 +31,7 @@ std::string SaiCanvas::GetName() const
 
 bool SaiCanvas::CaptureImage(const std::string Path)
 {
-	if (!Canvas)
+	if( !Canvas )
 	{
 		return false;
 	}
@@ -47,20 +47,21 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	//unsigned int StrideY = PixelHeap(2, sizeof(int)).asUint();
 	PixelHeap = PixelHeap[0xC];
 
-	for (unsigned int x = 0; x < Width(); x++)
+	for( unsigned int x = 0; x<Width(); x++ )
 	{
-		for (unsigned int y = 0; y < Height(); y++)
+		for( unsigned int y = 0; y<Height(); y++ )
 		{
 			unsigned int Pixel =
-				PixelHeap((x + LowerPadX) + (y + LowerPadY) * StrideX, sizeof(int)).asUint();
+				PixelHeap((x+LowerPadX)+(y+LowerPadY) * StrideX, sizeof(int)).asUint();
 			//BGRA to RGBA(Little endian)
-			Pixel = ((Pixel & 0x00ff0000) >> 16) | //Blue
-				((Pixel & 0x000000ff) << 16) |     //Red
-				(Pixel & 0xff00ff00);              //Green+Alpha
-			Buffer[Width() * y + x] = Pixel;
+			Pixel = (
+				(Pixel&0x00ff0000)>>16)| //Blue
+				((Pixel&0x000000ff)<<16)|     //Red
+				(Pixel&0xff00ff00);              //Green+Alpha
+			Buffer[Width() * y+x] = Pixel;
 		}
 	}
-	if (stbi_write_png(Path.c_str(), Width(), Height(), 4, Buffer, 0))
+	if( stbi_write_png(Path.c_str(), Width(), Height(), 4, Buffer, 0) )
 	{
 		return true;
 	}
