@@ -1,0 +1,17 @@
+#pragma once
+#include "SaiModule.h"
+
+class Capture : public SaiModule
+{
+public:
+	Capture();
+	~Capture();
+	std::string Info();
+	void Tick(const std::chrono::duration<double>& Delta);
+	void Run(const std::vector<std::string>& Args);
+private:
+	void CaptureCanvas();
+	bool Running;
+	double Delay;
+	double Timer;
+};

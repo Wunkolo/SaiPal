@@ -1,8 +1,11 @@
 #include "SaiPal.h"
 
+#include <iomanip>
+#include <sstream>
+#include <vector>
+
 #include <Windows.h>
 #include <conio.h> // _getch()
-#include <iomanip>
 #include <cctype> //isprint
 
 #define ps1 ">["
@@ -49,29 +52,31 @@ SaiPal::SaiPal()
 	::CreateDirectoryA("SaiPal", NULL);
 
 	//place holder
-	Commands.insert("history");
-	Commands.insert("canvas");
-	Commands.insert("capture");
-	Commands.insert("color");
+	Commands["capture"] = new Capture();
 }
 
 SaiPal::~SaiPal()
 {
+	for( std::map<std::string, SaiModule*>::iterator it = Commands.begin(); it != Commands.end(); ++it )
+	{
+		if( it->second )
+		{
+			delete it->second;
+		}
+	}
 }
 
 void SaiPal::Tick(const std::chrono::duration<double> Delta)
 {
 	PrintConsole();
-	static double Timer = 0;
-	Timer += Delta.count();
-	if( Timer >= (1 / 24.0) )//24 Hz
+	for( std::map<std::string, SaiModule*>::iterator it = Commands.begin(); it != Commands.end(); ++it )
 	{
-		//Random colors: 24 Hz
-		//place holder
-		//Session.SetPrimaryColor(rand(), rand(), rand());
-		Session.SetSecondaryColor(rand(), rand(), rand());
-		Timer = 0;
+		if( it->second )
+		{
+			it->second->Tick(Delta);
+		}
 	}
+	//Session.SetSecondaryColor(rand(), rand(), rand());
 }
 
 void SaiPal::PrintConsole()
@@ -105,11 +110,11 @@ void SaiPal::PrintConsole()
 			PrevSuggestion.clear();
 
 			std::vector<std::string> Suggest;
-			for( std::set<std::string>::iterator it = Commands.begin(); it != Commands.end(); ++it )
+			for( std::map<std::string, SaiModule*> ::iterator it = Commands.begin(); it != Commands.end(); ++it )
 			{
-				if( !Command.compare(0, Command.length(), (*it), 0, Command.length()) )//includes command
+				if( !Command.compare(0, Command.length(), (it->first), 0, Command.length()) )//includes command
 				{
-					Suggest.push_back((*it));
+					Suggest.push_back((it->first));
 				}
 			}
 			if( Suggest.size() == 1 )
@@ -160,6 +165,11 @@ void SaiPal::PrintConsole()
 			//enter
 			if( !Command.empty() )
 			{
+				//Split up string into arguments
+				std::stringstream ss(Command);
+				std::istream_iterator<std::string> begin(ss);
+				std::istream_iterator<std::string> end;
+				std::vector<std::string> Args(begin, end);
 				//Clear previous suggestion
 				for( unsigned int i = Command.length();
 					i < PrevSuggestion.length();
@@ -191,57 +201,9 @@ void SaiPal::PrintConsole()
 										  FOREGROUND_INTENSITY);
 				std::cout << ']' << std::endl;
 				//process command and execute it
-				//if (Commands.find(Command) != Commands.end())
-				//{
-				//	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-				//		FOREGROUND_GREEN |
-				//		FOREGROUND_INTENSITY);
-				//	std::cout << "Command executed" << std::endl;
-				//}
-				//else
-				if( !Command.compare("canvas") )
+				if( Commands.count(Args[0]) == 1 )
 				{
-					if( Session.ActiveCanvas()[0] )
-					{
-						SaiCanvas Canvas(Session.ActiveCanvas()[0]);
-						std::cout << Canvas.GetName() << " : " << Canvas.Width() << "x" << Canvas.Height() << std::endl;
-					}
-					else
-					{
-						std::cout << "No active canvas" << std::endl;
-					}
-				}
-				else if( !Command.compare("capture") )
-				{
-					if( Session.ActiveCanvas()[0] )
-					{
-						SaiCanvas Canvas(Session.ActiveCanvas()[0]);
-						std::string Path = Canvas.GetName();
-						Path = Path.substr(
-							Path.find_last_of('\\') == std::string::npos ? 0 : Path.find_last_of('\\') + 1,
-							std::string::npos);
-						Path.erase(Path.begin() + Path.find_last_of('.'), Path.end());
-						::CreateDirectory(std::string("SaiPal\\" + Path).c_str(), 0);
-						Path = "SaiPal\\" + Path + "\\" + Path;
-
-						LARGE_INTEGER time;
-						QueryPerformanceCounter(&time);
-
-						Path += " [" + std::to_string(time.QuadPart) + "]";
-						Path += ".png";
-
-						std::cout << "Capturing canvas to: " << Path
-							<< " [" << (Canvas.CaptureImage(Path) ? "Success" : "Failed")
-							<< std::endl;
-					}
-					else
-					{
-						std::cout << "No active canvas" << std::endl;
-					}
-				}
-				else if( !Command.compare("new") )
-				{
-					std::cout << "New canvas: " << (void*)Session.NewCanvas("Honk") << std::endl;
+					Commands[Args[0]]->Run(Args);
 				}
 				else if( !Command.compare("color") )
 				{
@@ -251,7 +213,58 @@ void SaiPal::PrintConsole()
 						(curColor.G >> 8) << ", " <<
 						(curColor.B >> 8) << std::endl;
 				}
-				else if( !Command.compare("history") )
+				else if( !Args[0].compare("help") )
+				{
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+											  FOREGROUND_RED |
+											  FOREGROUND_GREEN);
+					if( Args.size() == 2 )
+					{
+						if( Commands.count(Args[1]) == 1 )
+						{
+							std::cout << std::setfill('=');
+							std::cout.width(48);
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN |
+													  FOREGROUND_INTENSITY);
+							std::cout << std::left
+								<< Args[1]
+								<< std::endl;
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN);
+							std::cout << Commands[Args[1]]->Info() << std::endl;
+						}
+						else
+						{
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED);
+							std::cout << "Unknown Command" << std::endl;
+						}
+					}
+					else
+					{
+						std::cout << std::setfill('=');
+						std::map<std::string, SaiModule*>::iterator it;
+						for( it = Commands.begin(); it != Commands.end(); ++it )
+						{
+							std::cout.width(48);
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN |
+													  FOREGROUND_INTENSITY);
+							std::cout << std::left
+								<< it->first
+								<< std::endl;
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN);
+							std::cout << it->second->Info() << std::endl;
+						}
+					}
+				}
+				else if( !Args[0].compare("history") )
 				{
 					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 											  FOREGROUND_RED |
@@ -264,6 +277,12 @@ void SaiPal::PrintConsole()
 					{
 						std::cout << " -" << *it << std::endl;
 					}
+				}
+				else
+				{
+					::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+											  FOREGROUND_RED);
+					std::cout << "Unknown Command" << std::endl;
 				}
 				PrevCommands.push_back(Command);
 				PrevCommand = PrevCommands.end();
@@ -301,11 +320,11 @@ void SaiPal::PrintConsole()
 
 				//Populate possible matches
 				std::vector<std::string> Matches;
-				for( std::set<std::string>::iterator it = Commands.begin(); it != Commands.end(); ++it )
+				for( std::map<std::string, SaiModule*>::iterator it = Commands.begin(); it != Commands.end(); ++it )
 				{
-					if( !Command.compare(0, Command.length(), (*it), 0, Command.length()) )//includes command
+					if( !Command.compare(0, Command.length(), (it->first), 0, Command.length()) )//includes command
 					{
-						Matches.push_back((*it));
+						Matches.push_back((it->first));
 					}
 				}
 				//Calculate common prefix if there are matches
@@ -385,12 +404,13 @@ void SaiPal::PrintConsole()
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 										  FOREGROUND_RED |
 										  FOREGROUND_GREEN);
-				std::cout << "Available commands:" << std::endl;
-				std::set<std::string>::iterator it;
+				std::cout << "Available modules:" << std::endl;
+				std::map<std::string, SaiModule*>::iterator it;
 				for( it = Commands.begin(); it != Commands.end(); ++it )
 				{
-					std::cout << " -" << *it << std::endl;
+					std::cout << " -" << it->first << std::endl;
 				}
+				std::cout << " -history" << std::endl;
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 										  FOREGROUND_RED |
 										  FOREGROUND_GREEN |
