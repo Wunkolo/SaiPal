@@ -31,9 +31,9 @@ public:
 	{
 		if( _Pointer )
 		{
-			if( (unsigned int*)((char*)_Pointer+Offset) )
+			if( (unsigned int*)((char*)_Pointer + Offset) )
 			{
-				return Pointer(*(unsigned int*)((char*)_Pointer+Offset));
+				return Pointer(*(unsigned int*)((char*)_Pointer + Offset));
 			}
 		}
 		return Pointer(nullptr);
@@ -58,7 +58,7 @@ public:
 	//Returns the position of the pointer offset by a number of bytes(or stride value)
 	inline Pointer operator() (unsigned int Offset = 0, unsigned int Stride = 1) const
 	{
-		return Pointer((unsigned char*)_Pointer+(Offset*Stride));
+		return Pointer((unsigned char*)_Pointer + (Offset*Stride));
 	}
 
 	//Assignment
@@ -82,7 +82,7 @@ public:
 
 	inline operator bool() const
 	{
-		return _Pointer!=nullptr ? true : false;
+		return _Pointer != nullptr ? true : false;
 	}
 
 	inline unsigned int asUint() const

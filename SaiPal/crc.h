@@ -94,7 +94,7 @@ unsigned int crc32(unsigned int crc, const void *buf, unsigned int size)
 	crc = crc ^ ~0U;
 
 	while( size-- )
-		crc = crc32_tab[(crc ^ *p++)&0xFF]^(crc>>8);
+		crc = crc32_tab[(crc ^ *p++) & 0xFF] ^ (crc >> 8);
 
 	return crc ^ ~0U;
 }

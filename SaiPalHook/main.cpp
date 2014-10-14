@@ -14,14 +14,14 @@ int Thread()
 	{
 		PrevTime = CurTime;
 		CurTime = Clock::now();
-		SaiPal::Instance().Tick(CurTime-PrevTime);
+		SaiPal::Instance().Tick(CurTime - PrevTime);
 	}
 	return 0;
 }
 
 BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD Reason, LPVOID Misc)
 {
-	if( Reason==DLL_PROCESS_ATTACH )
+	if( Reason == DLL_PROCESS_ATTACH )
 	{
 		::DisableThreadLibraryCalls(hDLL);
 		//Set up new console window
@@ -30,7 +30,7 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD Reason, LPVOID Misc)
 		::SetConsoleTitleA("SaiPal");
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
 		::EnableMenuItem(::GetSystemMenu(::GetConsoleWindow(), FALSE),
-						 SC_CLOSE|SC_MINIMIZE,
+						 SC_CLOSE | SC_MINIMIZE,
 						 MF_GRAYED);
 		::DrawMenuBar(::GetConsoleWindow());
 		HANDLE hStd = ::GetStdHandle(STD_INPUT_HANDLE); // STD in Handle
@@ -59,15 +59,15 @@ BOOL WINAPI DllMain(HINSTANCE hDLL, DWORD Reason, LPVOID Misc)
 			NULL);
 		return true;
 	}
-	else if( Reason==DLL_PROCESS_DETACH )
+	else if( Reason == DLL_PROCESS_DETACH )
 	{
 		return true;
 	}
-	else if( Reason==DLL_THREAD_ATTACH )
+	else if( Reason == DLL_THREAD_ATTACH )
 	{
 		return true;
 	}
-	else if( Reason==DLL_THREAD_DETACH )
+	else if( Reason == DLL_THREAD_DETACH )
 	{
 		return true;
 	}

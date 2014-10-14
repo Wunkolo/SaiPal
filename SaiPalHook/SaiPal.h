@@ -8,7 +8,7 @@
 #include "Singleton.h"
 #include "SaiSession.h"
 
-class SaiPal : public Singleton<SaiPal>
+class SaiPal : public Singleton < SaiPal >
 {
 public:
 	SaiPal();
