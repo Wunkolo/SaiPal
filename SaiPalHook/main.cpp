@@ -10,8 +10,11 @@ typedef std::chrono::high_resolution_clock Clock;
 int Thread()
 {
 	Clock::time_point PrevTime, CurTime;
-	while( 1 )
+	HANDLE MainThread = OpenThread(THREAD_ALL_ACCESS, 0, GetMainThreadId());
+	DWORD MainThreadStatus = WAIT_TIMEOUT;
+	while( MainThreadStatus == WAIT_TIMEOUT )
 	{
+		MainThreadStatus = WaitForSingleObject(MainThread, 0);
 		PrevTime = CurTime;
 		CurTime = Clock::now();
 		SaiPal::Instance().Tick(CurTime - PrevTime);
