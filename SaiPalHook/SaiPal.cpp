@@ -54,6 +54,8 @@ SaiPal::SaiPal()
 	::CreateDirectoryA("SaiPal", NULL);
 
 	//Command list
+	Commands["help"] = nullptr;
+	Commands["history"] = nullptr;
 	Commands["capture"] = new Capture();
 	Commands["color"] = new Color();
 }
@@ -86,7 +88,6 @@ void SaiPal::PrintConsole()
 	if( _kbhit() )
 	{
 		int Key = _getch();
-		//std::cout << std::endl << std::hex << Key << std::endl;
 		if( std::isprint(Key) )
 		{
 			Command.push_back(Key);
@@ -203,7 +204,8 @@ void SaiPal::PrintConsole()
 										  FOREGROUND_INTENSITY);
 				std::cout << ']' << std::endl;
 				//process command and execute it
-				if( Commands.count(Args[0]) == 1 )
+				if( Commands.count(Args[0]) == 1 &&
+				   Commands[Args[0]] != nullptr )
 				{
 					Commands[Args[0]]->Run(Args);
 				}
@@ -214,7 +216,8 @@ void SaiPal::PrintConsole()
 											  FOREGROUND_GREEN);
 					if( Args.size() == 2 )
 					{
-						if( Commands.count(Args[1]) == 1 )
+						if( Commands.count(Args[1]) == 1 &&
+						   Commands[Args[1]] != nullptr )
 						{
 							std::cout << std::setfill('=');
 							std::cout.width(48);
@@ -230,11 +233,49 @@ void SaiPal::PrintConsole()
 													  FOREGROUND_GREEN);
 							std::cout << Commands[Args[1]]->Info() << std::endl;
 						}
+						else if( !Args[1].compare("help") )
+						{
+							std::cout << std::setfill('=');
+							std::cout.width(48);
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN |
+													  FOREGROUND_INTENSITY);
+							std::cout << std::left
+								<< "help"
+								<< std::endl;
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN);
+							std::cout <<
+								"Displays help for commands\n"
+								"help [command] to get information related to a command\n"
+								<< std::endl;
+						}
+						else if( !Args[1].compare("history") )
+						{
+							std::cout << std::setfill('=');
+							std::cout.width(48);
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN |
+													  FOREGROUND_INTENSITY);
+							std::cout << std::left
+								<< "history"
+								<< std::endl;
+							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+													  FOREGROUND_RED |
+													  FOREGROUND_GREEN);
+							std::cout <<
+								"Displays previously ran commands\n"
+								"Press up or down in the console to cycle through previously ran commands\n"
+								<< std::endl;
+						}
 						else
 						{
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED);
-							std::cout << "Unknown Command" << std::endl;
+							std::cout << "Unknown Command" << Args[1] << std::endl;
 						}
 					}
 					else
@@ -243,18 +284,21 @@ void SaiPal::PrintConsole()
 						std::map<std::string, SaiModule*>::iterator it;
 						for( it = Commands.begin(); it != Commands.end(); ++it )
 						{
-							std::cout.width(48);
-							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-													  FOREGROUND_RED |
-													  FOREGROUND_GREEN |
-													  FOREGROUND_INTENSITY);
-							std::cout << std::left
-								<< it->first
-								<< std::endl;
-							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-													  FOREGROUND_RED |
-													  FOREGROUND_GREEN);
-							std::cout << it->second->Info() << std::endl;
+							if( it->second != nullptr )
+							{
+								std::cout.width(48);
+								::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+														  FOREGROUND_RED |
+														  FOREGROUND_GREEN |
+														  FOREGROUND_INTENSITY);
+								std::cout << std::left
+									<< it->first
+									<< std::endl;
+								::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+														  FOREGROUND_RED |
+														  FOREGROUND_GREEN);
+								std::cout << it->second->Info() << std::endl;
+							}
 						}
 					}
 				}
@@ -404,7 +448,6 @@ void SaiPal::PrintConsole()
 				{
 					std::cout << " -" << it->first << std::endl;
 				}
-				std::cout << " -history" << std::endl;
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 										  FOREGROUND_RED |
 										  FOREGROUND_GREEN |
