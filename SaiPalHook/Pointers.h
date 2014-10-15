@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+unsigned int GetMainThreadId();
 void* GetModuleBase();
 void* GetModuleBase(const std::string& ModuleName);
 inline void* GetBasePointer()
