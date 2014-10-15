@@ -16,9 +16,10 @@ std::string Capture::Info() const
 	return
 		"'capture' captures a single frame of the currently open document.\n"
 		"'capture start [interval]' captures a frame every [interval] seconds.\n"
-		"ex: 'capture start 1.5' captures a frame every 1.5 seconds.\n"
 		"'capture stop' stops the current capture.\n"
-		"'capture [pause|resume]' pause or resume a currently running capture.\n";
+		"'capture [pause|resume]' pause or resume a currently running capture.\n"
+		"\tex: 'capture start 1.5' captures a frame every 1.5 seconds.\n"
+		"\tex: 'capture start 0.5' captures a frame every half-second\n";
 }
 
 void Capture::Tick(const std::chrono::duration<double>& Delta)

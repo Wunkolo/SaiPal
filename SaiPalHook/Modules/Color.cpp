@@ -57,13 +57,13 @@ std::string Color::Info() const
 	{
 		const std::vector<std::string>& names = (it->first);
 		std::vector<std::string>::const_iterator name;
-		MutatorList << "\t\t[";
+		MutatorList << "\t\t[ ";
 		for( name = names.begin(); name != names.end(); name++ )
 		{
 			MutatorList << *name
-				<< (name == (--names.end()) ? "" : "|");
+				<< (name == (--names.end()) ? "" : " | ");
 		}
-		MutatorList << ']' << std::endl;
+		MutatorList << " ]" << std::endl;
 	}
 
 	return
@@ -77,7 +77,12 @@ std::string Color::Info() const
 		MutatorList.str()
 		+
 		"'color stop' stops a previously started mutator.\n"
-		"'color [pause|resume]' pauses or resumes a previously started mutator.\n";
+		"'color [pause|resume]' pauses or resumes a previously started mutator.\n"
+		"\tex: 'color start complement' makes your secondary color equal\n"
+		"\t\tto the compliment of your primary color.\n"
+		"\tex: 'color start random' sets your secondary color to\n"
+		"\t\ta random color\n"
+		"\t\t(hold 'X' while drawing to get random colors every stroke).\n";
 }
 
 void Color::Tick(const std::chrono::duration<double>& Delta)
@@ -154,13 +159,13 @@ void Color::Run(const std::vector<std::string>& Args)
 				{
 					const std::vector<std::string>& names = (it->first);
 					std::vector<std::string>::const_iterator name;
-					MutatorList << "\t[";
+					MutatorList << "\t[ ";
 					for( name = names.begin(); name != names.end(); name++ )
 					{
 						MutatorList << *name
-							<< (name == (--names.end()) ? "" : "|");
+							<< (name == (--names.end()) ? "" : " | ");
 					}
-					MutatorList << ']' << std::endl;
+					MutatorList << " ]" << std::endl;
 				}
 				std::cout << "Must input a mutator. 'color start [mutator]'\n\tAvailable mutators:"
 					<< std::endl
