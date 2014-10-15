@@ -98,11 +98,11 @@ void Color::Run(const std::vector<std::string>& Args)
 	if( Args.size() == 1 )
 	{
 		std::cout << "Current Color:\n\tPrimary:   #"
-			<< std::hex << std::setw(6) << std::setfill('0')
+			<< std::hex << std::setw(6) << std::setfill('0') << std::uppercase
 			<< (SaiPal::Instance().GetSession().GetPrimaryColor().RGBX() >> 8)
 			<< std::endl
 			<< "\tSecondary: #"
-			<< std::hex << std::setw(6) << std::setfill('0')
+			<< std::hex << std::setw(6) << std::setfill('0') << std::uppercase
 			<< (SaiPal::Instance().GetSession().GetSecondaryColor().RGBX() >> 8)
 			<< std::endl;
 	}
@@ -110,7 +110,7 @@ void Color::Run(const std::vector<std::string>& Args)
 	{
 		if( !Args[1].compare("start") )
 		{
-			if( Args.size() >= 3 )//check for mutator name
+			if( Args.size() == 3 )//check for mutator name
 			{
 				//search for mutator
 				CurMutator = nullptr;
@@ -137,15 +137,34 @@ void Color::Run(const std::vector<std::string>& Args)
 							break;
 						}
 					}
-					if( CurMutator != nullptr )
-					{
-						break;
-					}
+				}
+				if( CurMutator == nullptr )
+				{
+					std::cout << "Unknown mutator name" << std::endl;
 				}
 			}
 			else
 			{
-				//ask user to enter mutator
+				std::stringstream MutatorList;
+				std::map <
+					std::vector<std::string>,
+					Mutator
+				>::const_iterator it;
+				for( it = Mutators.begin(); it != Mutators.end(); it++ )
+				{
+					const std::vector<std::string>& names = (it->first);
+					std::vector<std::string>::const_iterator name;
+					MutatorList << "\t[";
+					for( name = names.begin(); name != names.end(); name++ )
+					{
+						MutatorList << *name
+							<< (name == (--names.end()) ? "" : "|");
+					}
+					MutatorList << ']' << std::endl;
+				}
+				std::cout << "Must input a mutator. 'color start [mutator]'\n\tAvailable mutators:"
+					<< std::endl
+					<< MutatorList.str();
 			}
 		}
 		else if( !Args[1].compare("stop") )
