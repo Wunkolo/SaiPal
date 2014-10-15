@@ -6,7 +6,7 @@ class Capture : public SaiModule
 public:
 	Capture();
 	~Capture();
-	std::string Info();
+	std::string Info() const;
 	void Tick(const std::chrono::duration<double>& Delta);
 	void Run(const std::vector<std::string>& Args);
 private:

@@ -8,6 +8,8 @@
 #include <conio.h> // _getch()
 #include <cctype> //isprint
 
+#include "SaiModules.h"
+
 #define ps1 ">["
 
 SaiPal::SaiPal()
@@ -51,8 +53,9 @@ SaiPal::SaiPal()
 
 	::CreateDirectoryA("SaiPal", NULL);
 
-	//place holder
+	//Command list
 	Commands["capture"] = new Capture();
+	Commands["color"] = new Color();
 }
 
 SaiPal::~SaiPal()
@@ -76,7 +79,6 @@ void SaiPal::Tick(const std::chrono::duration<double> Delta)
 			it->second->Tick(Delta);
 		}
 	}
-	//Session.SetSecondaryColor(rand(), rand(), rand());
 }
 
 void SaiPal::PrintConsole()
@@ -204,14 +206,6 @@ void SaiPal::PrintConsole()
 				if( Commands.count(Args[0]) == 1 )
 				{
 					Commands[Args[0]]->Run(Args);
-				}
-				else if( !Command.compare("color") )
-				{
-					Color curColor = Session.GetPrimaryColor();
-					std::cout << "Current Color: " <<
-						(curColor.R >> 8) << ", " <<
-						(curColor.G >> 8) << ", " <<
-						(curColor.B >> 8) << std::endl;
 				}
 				else if( !Args[0].compare("help") )
 				{

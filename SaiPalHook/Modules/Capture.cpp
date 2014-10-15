@@ -11,7 +11,7 @@ Capture::~Capture()
 {
 }
 
-std::string Capture::Info()
+std::string Capture::Info() const
 {
 	return
 		"'capture' captures a single frame of the currently open document.\n"
@@ -106,7 +106,7 @@ void Capture::Run(const std::vector<std::string>& Args)
 			}
 			else if( !Args[1].compare("resume") )
 			{
-				if( Running )
+				if( Running == false && Delay != 0.0 )
 				{
 					Running = true;
 					std::cout << "Capture resumed" << std::endl;

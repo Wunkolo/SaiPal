@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+#define NOMINMAX
 #include <Windows.h>
 #include "Pointers.h"
 
@@ -23,12 +24,12 @@ public:
 					  unsigned int Height = 500,
 					  unsigned short Args = 1);
 
-	Color GetPrimaryColor() const;
+	SaiColor GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);
-	void SetPrimaryColor(const Color& NewColor);
-	Color GetSecondaryColor() const;
+	void SetPrimaryColor(const SaiColor& NewColor);
+	SaiColor GetSecondaryColor() const;
 	void SetSecondaryColor(unsigned char R, unsigned char G, unsigned char B);
-	void SetSecondaryColor(const Color& NewColor);
+	void SetSecondaryColor(const SaiColor& NewColor);
 private:
 	Pointer Session;
 };
