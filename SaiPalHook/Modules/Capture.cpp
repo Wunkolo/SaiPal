@@ -18,8 +18,7 @@ std::string Capture::Info() const
 		"'capture start [interval]' captures a frame every [interval] seconds.\n"
 		"ex: 'capture start 1.5' captures a frame every 1.5 seconds.\n"
 		"'capture stop' stops the current capture.\n"
-		"'capture pause' pauses a currently active capture process\n"
-		"'capture resume' resumes a paused capture process\n";
+		"'capture [pause|resume]' pause or resume a currently running capture.\n";
 }
 
 void Capture::Tick(const std::chrono::duration<double>& Delta)
