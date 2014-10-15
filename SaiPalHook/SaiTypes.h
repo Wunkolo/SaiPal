@@ -63,7 +63,7 @@ struct SaiColor
 		this->G = 128 + (G << 8);
 		this->B = 128 + (B << 8);
 	}
-	void SetRGBA(unsigned int RGBX)
+	void SetRGBX(unsigned int RGBX)
 	{
 		this->R = 128 + (((RGBX >> 24) & 0xff) << 8);
 		this->G = 128 + (((RGBX >> 16) & 0xff) << 8);
