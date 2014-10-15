@@ -11,7 +11,7 @@ public:
 	void Run(const std::vector<std::string>& Args);
 private:
 	void CaptureCanvas();
-	bool Running;
+	bool Running, Active;
 	double Delay;
 	double Timer;
 };

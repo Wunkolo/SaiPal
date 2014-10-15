@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 
-Capture::Capture() : Running(false), Timer(0.0)
+Capture::Capture() : Running(false), Timer(0.0), Delay(FLT_MAX)
 {
 }
 
@@ -23,7 +23,7 @@ std::string Capture::Info() const
 
 void Capture::Tick(const std::chrono::duration<double>& Delta)
 {
-	if( Running )
+	if( Running && Active )
 	{
 		//Capture every time delta adds up to the delay time
 		Timer += Delta.count();
@@ -41,33 +41,34 @@ void Capture::Run(const std::vector<std::string>& Args)
 	{
 		if( Args.size() == 1 )
 		{
-			if( Running )
-			{
-				std::cout << "Canvas captured" << std::endl;
-				CaptureCanvas();
-			}
-			else
-			{
-				CaptureCanvas();
-				std::cout << "Canvas captured" << std::endl;
-			}
+			CaptureCanvas();
+			std::cout << "Canvas captured" << std::endl;
 		}
 		if( Args.size() >= 2 )
 		{
 			if( !Args[1].compare("stop") )
 			{
-				std::cout << "Stopping capture" << std::endl;
-				Timer = 0.0;
-				Delay = FLT_MAX;
-				Running = false;
+				if( Running )
+				{
+					std::cout << "Stopping capture" << std::endl;
+					Timer = 0.0;
+					Delay = FLT_MAX;
+					Running = false;
+					Active = false;
+				}
+				else
+				{
+					std::cout << "No capture in progress" << std::endl;
+				}
 			}
 			else if( !Args[1].compare("start") )
 			{
-				if( Args.size() >= 3 && std::atof(Args[2].c_str()) != 0.0 )
+				if( Args.size() >= 3 && std::atof(Args[2].c_str()) > 0.0 )
 				{
 					std::cout << "Starting capture every "
 						<< std::atof(Args[2].c_str()) << " second(s)." << std::endl;
 					Running = true;
+					Active = true;
 					Timer = 0.0;
 					Delay = std::atof(Args[2].c_str());
 				}
@@ -85,16 +86,16 @@ void Capture::Run(const std::vector<std::string>& Args)
 						}
 					} while( Delay <= 0 || std::cin.fail() );
 					std::cout << "Starting capture every "
-						<< Delay << "seconds(s)" << std::endl;
+						<< Delay << " seconds(s)" << std::endl;
 					Running = true;
 					Timer = 0.0;
 				}
 			}
 			else if( !Args[1].compare("pause") )
 			{
-				if( Running )
+				if( Running && Active )
 				{
-					Running = false;
+					Active = false;
 					std::cout << "Capture paused(type 'capture resume' to continue)"
 						<< std::endl;
 				}
@@ -105,9 +106,9 @@ void Capture::Run(const std::vector<std::string>& Args)
 			}
 			else if( !Args[1].compare("resume") )
 			{
-				if( Running == false && Delay != 0.0 )
+				if( Running && !Active )
 				{
-					Running = true;
+					Active = true;
 					std::cout << "Capture resumed" << std::endl;
 				}
 				else
@@ -139,6 +140,7 @@ void Capture::CaptureCanvas()
 			Path.find_last_of('\\') == std::string::npos ? 0 : Path.find_last_of('\\') + 1,
 			std::string::npos);
 		Path.erase(Path.begin() + Path.find_last_of('.'), Path.end());
+		::CreateDirectory("SaiPal", 0);
 		::CreateDirectory(std::string("SaiPal\\" + Path).c_str(), 0);
 		Path = "SaiPal\\" + Path + "\\" + Path;
 
