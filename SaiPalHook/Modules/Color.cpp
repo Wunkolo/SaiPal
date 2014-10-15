@@ -23,7 +23,7 @@ Color::Color() : Running(false), Active(false), CurMutator(nullptr)
 		color.SetRGBX(color.RGBX() ^ 0xFFFFFF00);
 	};
 
-	//Compliment
+	//Complement
 	Mutators[{ "complement", "comp", "harm" }] =
 		[](SaiColor& color)
 	{
