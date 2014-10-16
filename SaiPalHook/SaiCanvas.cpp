@@ -51,7 +51,9 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	//unsigned int StrideY = PixelHeap(2, sizeof(int)).asUint();
 	PixelHeap = PixelHeap[0xC];
 	//16 byte aligned buffer
-	unsigned int * Buffer = new unsigned int[Width()*Height()];
+	//Avoids crashing on non-even canvas sizes.
+	unsigned int * Buffer =
+		(unsigned int*)_aligned_malloc(Width()*Height() * 4, 16);
 
 	// BGRA to RGBA
 	__m128i shuffle =
@@ -61,7 +63,6 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 		7, 4, 5, 6,
 		3, 0, 1, 2);
 	//Process four pixels at a time
-
 	for( unsigned int y = 0; y < Height(); y++ )
 	{
 		for( unsigned int x = 0; x < Width(); x += 4 )
@@ -71,8 +72,8 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 				PixelHeap((x + LowerPadX) + (y + LowerPadY) * Stride,
 				sizeof(int)));
 			QuadPixel = _mm_shuffle_epi8(QuadPixel, shuffle);
-			_mm_store_si128(
-				(__m128i*)&Buffer[Width() * y + x],
+			_mm_storeu_si128(
+				(__m128i*)&Buffer[(x)+(y)*Width()],
 				QuadPixel);
 		}
 	}
@@ -96,10 +97,10 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 
 	if( stbi_write_png(Path.c_str(), Width(), Height(), 4, Buffer, 0) )
 	{
-		delete[] Buffer;
+		_aligned_free(Buffer);
 		return true;
 	}
-	delete[] Buffer;
+	_aligned_free(Buffer);
 	return false;
 }
 
