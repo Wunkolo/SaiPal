@@ -12,6 +12,10 @@ SaiSession::SaiSession()
 
 SaiSession::SaiSession(Pointer Session)
 {
+	if( !Session )
+	{
+		return;
+	}
 	this->Session = Session;
 }
 
@@ -21,6 +25,10 @@ SaiSession::~SaiSession()
 
 HWND SaiSession::GetWindow()
 {
+	if( !Session )
+	{
+		return HWND();
+	}
 	return Session(0xA0).as<HWND>();
 }
 
@@ -55,30 +63,54 @@ Pointer SaiSession::NewCanvas(std::string CanvasName,
 
 SaiColor SaiSession::GetPrimaryColor() const
 {
+	if( !Session )
+	{
+		return SaiColor();
+	}
 	return Session(0x874).as<SaiColor>();
 }
 
 void SaiSession::SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B)
 {
+	if( !Session )
+	{
+		return;
+	}
 	SetPrimaryColor(SaiColor(R, G, B));
 }
 
 void SaiSession::SetPrimaryColor(const SaiColor& NewColor)
 {
+	if( !Session )
+	{
+		return;
+	}
 	*(SaiColor*)Session(0x874) = NewColor;
 }
 
 SaiColor SaiSession::GetSecondaryColor() const
 {
+	if( !Session )
+	{
+		return SaiColor();
+	}
 	return Session(0x87C).as<SaiColor>();
 }
 
 void SaiSession::SetSecondaryColor(unsigned char R, unsigned char G, unsigned char B)
 {
+	if( !Session )
+	{
+		return;
+	}
 	SetSecondaryColor(SaiColor(R, G, B));
 }
 
 void SaiSession::SetSecondaryColor(const SaiColor& NewColor)
 {
+	if( !Session )
+	{
+		return;
+	}
 	*(SaiColor*)Session(0x87C) = NewColor;
 }
