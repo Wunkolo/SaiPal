@@ -26,6 +26,10 @@ SaiCanvas::~SaiCanvas()
 
 std::string SaiCanvas::GetName() const
 {
+	if( !Canvas )
+	{
+		return "";
+	}
 #if defined(SAI120)
 	return std::string((char*)Canvas(0x5d8));
 #elif defined(SAI110)
@@ -43,18 +47,19 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 	}
 	unsigned int LowerPadX = Canvas(0x114).asUint();
 	unsigned int LowerPadY = Canvas(0x118).asUint();
-	unsigned int HigherPadX = Canvas(0x11C).asUint();
-	unsigned int HigherPadY = Canvas(0x120).asUint();
+	//unsigned int HigherPadX = Canvas(0x11C).asUint();
+	//unsigned int HigherPadY = Canvas(0x120).asUint();
 	Pointer PixelHeap = Canvas[0x30];
 
 	unsigned int Stride = PixelHeap(1, sizeof(int)).asUint();
 	//unsigned int StrideY = PixelHeap(2, sizeof(int)).asUint();
 	PixelHeap = PixelHeap[0xC];
 	//16 byte aligned buffer
-	//Avoids crashing on non-even canvas sizes.
+	//Avoids crashing on non-aligned canvas sizes
 	unsigned int * Buffer =
 		(unsigned int*)_aligned_malloc(Width()*Height() * 4, 16);
 
+	//SSE
 	// BGRA to RGBA
 	__m128i shuffle =
 		_mm_set_epi8(
@@ -78,6 +83,7 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 		}
 	}
 
+	//Regular C routine
 	//for( unsigned int x = 0; x < Width(); x++ )
 	//{
 	//	for( unsigned int y = 0; y < Height(); y++ )
@@ -106,10 +112,18 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 
 unsigned int SaiCanvas::Width() const
 {
+	if( !Canvas )
+	{
+		return 0;
+	}
 	return Canvas(0x124).asUint();
 }
 
 unsigned int SaiCanvas::Height() const
 {
+	if( !Canvas )
+	{
+		return 0;
+	}
 	return Canvas(0x128).asUint();
 }
