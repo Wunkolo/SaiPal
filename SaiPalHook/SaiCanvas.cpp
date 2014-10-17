@@ -67,6 +67,8 @@ bool SaiCanvas::CaptureImage(const std::string Path)
 		11, 8, 9, 10,
 		7, 4, 5, 6,
 		3, 0, 1, 2);
+	//  A  B  G  R
+	//  R  G  B  A
 	//Process four pixels at a time
 	for( unsigned int y = 0; y < Height(); y++ )
 	{
