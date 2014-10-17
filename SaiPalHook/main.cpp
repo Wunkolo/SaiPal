@@ -10,6 +10,9 @@ typedef std::chrono::high_resolution_clock Clock;
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 int Thread()
 {
 	Clock::time_point PrevTime, CurTime;
