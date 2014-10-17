@@ -5,6 +5,13 @@
 #define SwatchWidth 12
 #define SwatchHeight 13
 
+#include <stdlib.h> // _aligned_malloc
+#include <emmintrin.h> // _mm_set_epi8 etc
+#include <tmmintrin.h> // _mm_shuffle_epi8
+
+#include "stb_image_write.h"
+#include "stb_image.h"
+
 SaiSwatch::SaiSwatch() : Swatch(nullptr)
 {
 }
@@ -56,4 +63,98 @@ unsigned int* SaiSwatch::RawPtr()
 		return nullptr;
 	}
 	return (unsigned int*)Swatch();
+}
+
+bool SaiSwatch::SaveSwatch(const std::string Path)
+{
+	if( !Swatch )
+	{
+		return false;
+	}
+	//16 byte aligned buffer
+	unsigned int * Buffer =
+		(unsigned int*)_aligned_malloc(
+		SwatchWidth*SwatchHeight * 4
+		, 16);
+
+	// BGRA to RGBA
+	__m128i shuffle =
+		_mm_set_epi8(
+		15, 12, 13, 14,
+		11, 8, 9, 10,
+		7, 4, 5, 6,
+		3, 0, 1, 2);
+	//Four pixels at a time
+	for( unsigned int i = 0;
+		i < (SwatchWidth*SwatchHeight);
+		i += 4 )
+	{
+		__m128i QuadPixel =
+			_mm_loadu_si128((__m128i*)
+			Swatch(i, sizeof(unsigned int)));
+		QuadPixel = _mm_shuffle_epi8(QuadPixel, shuffle);
+		_mm_store_si128((__m128i*)&Buffer[i], QuadPixel);
+	}
+
+	if( stbi_write_png(Path.c_str(),
+		SwatchWidth, SwatchHeight,
+		4, Buffer, 0) )
+	{
+		_aligned_free(Buffer);
+		return true;
+	}
+	_aligned_free(Buffer);
+	return false;
+}
+
+bool SaiSwatch::ReadSwatch(const std::string Path)
+{
+	int Width, Height, Channels;
+	unsigned char* Image
+		= stbi_load(
+		Path.c_str(),
+		&Width,
+		&Height,
+		&Channels, 4);
+	if( !Image )
+	{
+		stbi_image_free(Image);
+		return false;
+	}
+	if( Width < SwatchWidth ||
+	   Height < SwatchHeight )
+	{
+		//Image size is less than swatch size
+		//Todo: Load pixels that it can
+		stbi_image_free(Image);
+		return false;
+	}
+
+	//16 byte aligned buffer
+	unsigned int * Buffer =
+		(unsigned int*)_aligned_malloc(
+		SwatchWidth*SwatchHeight * 4
+		, 16);
+
+	//convert RGBA to BGRA
+	__m128i shuffle =
+		_mm_set_epi8(
+		15, 12, 13, 14,
+		11, 8, 9, 10,
+		7, 4, 5, 6,
+		3, 0, 1, 2);
+	//Four pixels at a time
+	for( unsigned int i = 0;
+		i < (SwatchWidth*SwatchHeight);
+		i += 4 )
+	{
+		__m128i QuadPixel =
+			_mm_loadu_si128((__m128i*)(Image + (i * 4)));
+		QuadPixel = _mm_shuffle_epi8(QuadPixel, shuffle);
+		_mm_store_si128((__m128i*)&Buffer[i], QuadPixel);
+	}
+	memcpy(Swatch, Buffer, SwatchHeight*SwatchWidth * 4);
+	_aligned_free(Buffer);
+	stbi_image_free(Image);
+	return true;
 }
