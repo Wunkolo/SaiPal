@@ -7,13 +7,15 @@ typedef std::chrono::high_resolution_clock Clock;
 
 #include "SaiPal.h"
 
-//Stb implementations
+//stb implementations
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#define STBIR_DEFAULT_FILTER_UPSAMPLE     STBIR_FILTER_BOX
+#define STBIR_DEFAULT_FILTER_DOWNSAMPLE   STBIR_FILTER_BOX
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize.h"
 
