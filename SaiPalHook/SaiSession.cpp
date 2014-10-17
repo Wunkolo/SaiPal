@@ -61,6 +61,11 @@ Pointer SaiSession::NewCanvas(std::string CanvasName,
 	return nullptr;
 }
 
+SaiSwatch SaiSession::GetSwatches()
+{
+	return SaiSwatch(Session(0x886));
+}
+
 SaiColor SaiSession::GetPrimaryColor() const
 {
 	if( !Session )

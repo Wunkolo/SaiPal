@@ -6,7 +6,6 @@
 #include "Pointers.h"
 
 #include "SaiTypes.h"
-#include "SaiCanvas.h"
 
 class SaiSession
 {
@@ -24,6 +23,7 @@ public:
 					  unsigned int Height = 500,
 					  unsigned short Args = 1);
 
+	SaiSwatch GetSwatches();
 	SaiColor GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);
 	void SetPrimaryColor(const SaiColor& NewColor);

@@ -58,6 +58,7 @@ SaiPal::SaiPal()
 	Commands["history"] = nullptr;
 	Commands["capture"] = new Capture();
 	Commands["color"] = new Color();
+	Commands["swatch"] = new Swatch();
 }
 
 SaiPal::~SaiPal()

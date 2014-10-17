@@ -1,4 +1,6 @@
 #pragma once
+#include "SaiCanvas.h"
+#include "SaiSwatch.h"
 
 #pragma pack()
 struct SaiColor
