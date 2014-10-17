@@ -2,14 +2,13 @@
 
 #include "SaiPalConfig.h"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
 #include <type_traits>
 
 #include <stdlib.h> // _aligned_malloc
 #include <emmintrin.h> // _mm_set_epi8 etc
 #include <tmmintrin.h> // _mm_shuffle_epi8
+
+#include "stb_image_write.h"
 
 SaiCanvas::SaiCanvas() : Canvas(nullptr)
 {

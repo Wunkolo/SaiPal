@@ -7,6 +7,9 @@ typedef std::chrono::high_resolution_clock Clock;
 
 #include "SaiPal.h"
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
 int Thread()
 {
 	Clock::time_point PrevTime, CurTime;
