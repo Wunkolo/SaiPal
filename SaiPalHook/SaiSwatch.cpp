@@ -11,6 +11,7 @@
 
 #include "stb_image_write.h"
 #include "stb_image.h"
+#include "stb_image_resize.h"
 
 SaiSwatch::SaiSwatch() : Swatch(nullptr)
 {
@@ -110,8 +111,8 @@ bool SaiSwatch::SaveSwatch(const std::string Path)
 bool SaiSwatch::ReadSwatch(const std::string Path)
 {
 	int Width, Height, Channels;
-	unsigned char* Image
-		= stbi_load(
+	unsigned int* Image
+		= (unsigned int*)stbi_load(
 		Path.c_str(),
 		&Width,
 		&Height,
@@ -121,21 +122,28 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 		stbi_image_free(Image);
 		return false;
 	}
-	if( Width < SwatchWidth ||
-	   Height < SwatchHeight )
-	{
-		//Image size is less than swatch size
-		//Todo: Load pixels that it can
-		stbi_image_free(Image);
-		return false;
-	}
+	//if( Width < SwatchWidth ||
+	//   Height < SwatchHeight )
+	//{
+	//	//Image size is less than swatch size
+	//	//Todo: Take bilinear samples regardless of the image's size
+	//	stbi_image_free(Image);
+	//	return false;
+	//}
 
 	//16 byte aligned buffer
 	unsigned int * Buffer =
 		(unsigned int*)_aligned_malloc(
 		SwatchWidth*SwatchHeight * 4
 		, 16);
+	printf("resize\n");
+	//resize image to 12x13
+	stbir_resize_uint8(
+		(const unsigned char*)Image, Width, Height, 0,
+		(unsigned char*)Buffer, SwatchWidth, SwatchHeight,
+		0, 4);
 
+	printf("rgba to bgra\n");
 	//convert RGBA to BGRA
 	__m128i shuffle =
 		_mm_set_epi8(
@@ -144,15 +152,18 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 		7, 4, 5, 6,
 		3, 0, 1, 2);
 	//Four pixels at a time
+	printf("Buffer ptr: %x\n", Buffer);
 	for( unsigned int i = 0;
 		i < (SwatchWidth*SwatchHeight);
 		i += 4 )
 	{
+		printf("Buffer ptr: %x\n", &Buffer[i]);
 		__m128i QuadPixel =
-			_mm_loadu_si128((__m128i*)(Image + (i * 4)));
+			_mm_load_si128((__m128i*)&Buffer[i]);
 		QuadPixel = _mm_shuffle_epi8(QuadPixel, shuffle);
 		_mm_store_si128((__m128i*)&Buffer[i], QuadPixel);
 	}
+
 	memcpy(Swatch, Buffer, SwatchHeight*SwatchWidth * 4);
 	_aligned_free(Buffer);
 	stbi_image_free(Image);
