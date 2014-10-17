@@ -16,6 +16,9 @@ public:
 
 	HWND GetWindow();
 
+	//Status text on bottom of Sai Window
+	void SetStatusText(const std::string Text);
+
 	//May be null. Resolve([0]) to verify
 	Pointer ActiveCanvas();
 	Pointer NewCanvas(std::string CanvasName,

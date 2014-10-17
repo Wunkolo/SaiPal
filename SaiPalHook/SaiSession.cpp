@@ -32,6 +32,13 @@ HWND SaiSession::GetWindow()
 	return Session(0xA0).as<HWND>();
 }
 
+void SaiSession::SetStatusText(const std::string Text)
+{
+	HWND StatusTextHandle = Session(0x10C).as<HWND>();
+	SetWindowTextA(StatusTextHandle, Text.c_str());
+	RedrawWindow(StatusTextHandle, 0, 0, 1);
+}
+
 Pointer SaiSession::ActiveCanvas()
 {
 	return Session(0x3C4);
