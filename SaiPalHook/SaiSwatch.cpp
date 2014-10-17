@@ -27,6 +27,10 @@ SaiSwatch::~SaiSwatch()
 unsigned int SaiSwatch::GetSwatchRGBA(unsigned char X,
 									  unsigned char Y)
 {
+	if( !Swatch )
+	{
+		return 0;
+	}
 	if( X > 12 || Y > 13 )
 	{
 		return 0;
@@ -42,6 +46,10 @@ unsigned int SaiSwatch::GetSwatchRGBA(unsigned char X,
 unsigned int SaiSwatch::GetSwatchARGB(unsigned char X,
 									  unsigned char Y)
 {
+	if( !Swatch )
+	{
+		return 0;
+	}
 	if( X > 12 || Y > 13 )
 	{
 		return 0;
@@ -49,6 +57,11 @@ unsigned int SaiSwatch::GetSwatchARGB(unsigned char X,
 	return Swatch(X + Y * 13).asUint();
 }
 
-unsigned int* RawPtr()
+unsigned int* SaiSwatch::RawPtr()
 {
+	if( !Swatch )
+	{
+		return nullptr;
+	}
+	return (unsigned int*)Swatch();
 }
