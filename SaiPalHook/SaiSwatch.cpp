@@ -5,7 +5,7 @@
 #define SwatchWidth 12
 #define SwatchHeight 13
 
-SaiSwatch::SaiSwatch()
+SaiSwatch::SaiSwatch() : Swatch(nullptr)
 {
 }
 SaiSwatch::SaiSwatch(const Pointer Swatch)

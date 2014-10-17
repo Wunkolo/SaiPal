@@ -11,7 +11,7 @@
 #include <emmintrin.h> // _mm_set_epi8 etc
 #include <tmmintrin.h> // _mm_shuffle_epi8
 
-SaiCanvas::SaiCanvas()
+SaiCanvas::SaiCanvas() : Canvas(nullptr)
 {
 }
 
