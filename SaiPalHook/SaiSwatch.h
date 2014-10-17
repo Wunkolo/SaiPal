@@ -18,7 +18,8 @@ public:
 	//BGRA pixel array
 	unsigned int* RawPtr();
 
-	bool SaveSwatch(const std::string Path);
+	bool SaveSwatch(const std::string Path,
+					unsigned int Scale = 1);
 	bool ReadSwatch(const std::string Path);
 private:
 	Pointer Swatch;

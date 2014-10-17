@@ -66,9 +66,9 @@ unsigned int* SaiSwatch::RawPtr()
 	return (unsigned int*)Swatch();
 }
 
-bool SaiSwatch::SaveSwatch(const std::string Path)
+bool SaiSwatch::SaveSwatch(const std::string Path, unsigned int Scale)
 {
-	if( !Swatch )
+	if( !Swatch || !Scale )
 	{
 		return false;
 	}
@@ -97,15 +97,46 @@ bool SaiSwatch::SaveSwatch(const std::string Path)
 		_mm_store_si128((__m128i*)&Buffer[i], QuadPixel);
 	}
 
-	if( stbi_write_png(Path.c_str(),
-		SwatchWidth, SwatchHeight,
-		4, Buffer, 0) )
+	if( Scale > 1 )
 	{
+		//resize to scale
+		unsigned int* ResizeBuf
+			= new unsigned int[(SwatchWidth*Scale)*(SwatchHeight*Scale)];
+		stbir_resize_uint8(
+			(const unsigned char*)Buffer,
+			SwatchWidth, SwatchHeight, 0,
+			(unsigned char*)ResizeBuf,
+			SwatchWidth*Scale, SwatchHeight*Scale, 0,
+			4);
 		_aligned_free(Buffer);
-		return true;
+		if( stbi_write_png(Path.c_str(),
+			SwatchWidth*Scale, SwatchHeight*Scale,
+			4, ResizeBuf, 0) )
+		{
+			delete[] ResizeBuf;
+			return true;
+		}
+		else
+		{
+			delete[] ResizeBuf;
+			return false;
+		}
 	}
-	_aligned_free(Buffer);
-	return false;
+	else
+	{
+		if( stbi_write_png(Path.c_str(),
+			SwatchWidth, SwatchHeight,
+			4, Buffer, 0) )
+		{
+			_aligned_free(Buffer);
+			return true;
+		}
+		else
+		{
+			_aligned_free(Buffer);
+			return false;
+		}
+	}
 }
 
 bool SaiSwatch::ReadSwatch(const std::string Path)
@@ -126,7 +157,7 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 	//   Height < SwatchHeight )
 	//{
 	//	//Image size is less than swatch size
-	//	//Todo: Take bilinear samples regardless of the image's size
+	//	//To do: Take bilinear samples regardless of the image's size
 	//	stbi_image_free(Image);
 	//	return false;
 	//}
@@ -136,14 +167,14 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 		(unsigned int*)_aligned_malloc(
 		SwatchWidth*SwatchHeight * 4
 		, 16);
-	printf("resize\n");
 	//resize image to 12x13
+	//To do: take a 12x13 grid of open gl like samples regardless of image size.
 	stbir_resize_uint8(
 		(const unsigned char*)Image, Width, Height, 0,
 		(unsigned char*)Buffer, SwatchWidth, SwatchHeight,
 		0, 4);
+	stbi_image_free(Image);
 
-	printf("rgba to bgra\n");
 	//convert RGBA to BGRA
 	__m128i shuffle =
 		_mm_set_epi8(
@@ -152,12 +183,10 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 		7, 4, 5, 6,
 		3, 0, 1, 2);
 	//Four pixels at a time
-	printf("Buffer ptr: %x\n", Buffer);
 	for( unsigned int i = 0;
 		i < (SwatchWidth*SwatchHeight);
 		i += 4 )
 	{
-		printf("Buffer ptr: %x\n", &Buffer[i]);
 		__m128i QuadPixel =
 			_mm_load_si128((__m128i*)&Buffer[i]);
 		QuadPixel = _mm_shuffle_epi8(QuadPixel, shuffle);
@@ -166,6 +195,5 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 
 	memcpy(Swatch, Buffer, SwatchHeight*SwatchWidth * 4);
 	_aligned_free(Buffer);
-	stbi_image_free(Image);
 	return true;
 }
