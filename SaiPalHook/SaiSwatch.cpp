@@ -185,7 +185,7 @@ bool SaiSwatch::SaveSwatch(const std::string Path, unsigned int Scale)
 	}
 }
 
-bool SaiSwatch::ReadSwatch(const std::string Path)
+bool SaiSwatch::LoadSwatch(const std::string Path)
 {
 	int Width, Height, Channels;
 	unsigned int* Image

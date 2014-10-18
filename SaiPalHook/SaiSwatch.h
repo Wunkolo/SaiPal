@@ -27,7 +27,7 @@ public:
 
 	bool SaveSwatch(const std::string Path,
 					unsigned int Scale = 1);
-	bool ReadSwatch(const std::string Path);
+	bool LoadSwatch(const std::string Path);
 private:
 	Pointer Swatch;
 };
