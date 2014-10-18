@@ -46,9 +46,7 @@ void Capture::Run(const std::vector<std::string>& Args)
 		if( Args.size() == 1 )
 		{
 			CaptureCanvas();
-			std::cout << "Canvas saved to: "
-				<< (SaiPal::Instance().GetDirectory() + "Captures\\")
-				<< std::endl;
+			std::cout << "Canvas Captured " << std::endl;
 		}
 		if( Args.size() >= 2 )
 		{
