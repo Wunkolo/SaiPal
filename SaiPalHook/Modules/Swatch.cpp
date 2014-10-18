@@ -15,11 +15,13 @@ std::string Swatch::Info() const
 {
 	return
 		"Swatch Directory: " + (SaiPal::Instance().GetDirectory() + "Swatches\n") +
-		"'swatch' shows info of operations you can execute onto your active swatch\n"
-		"'swatch save' Saves your current swatch\n"
-		"'swatch save [Swatch Name] (Scale)' Saves your current swatch with the specified name.\n"
-		"\tScale value optional(defaults to 1)\n"
-		"'swatch load [Swatch Namename]' Loads the specified image into your swatches";
+		"'swatch' shows available swatch operations and available swatches\n"
+		"'swatch save [Swatch Name] (Scale)' saves your current swatch with the\n"
+		"\tspecified name. Scale value optional(defaults to 1)\n"
+		"'swatch load [Swatch Name]' loads the specified swatch\n"
+		"\tex: 'swatch save CoolSwatch' will save to \"CoolSwatch.png\"\n"
+		"\tex: 'swatch save CoolSwatch 2' will save an x2 larger image of it.\n"
+		"\tex: 'swatch load CoolerSwatch' will load \"CoolerSwatch.png\"\n";
 }
 
 void Swatch::Tick(const std::chrono::duration<double>& Delta)
@@ -30,7 +32,29 @@ void Swatch::Run(const std::vector<std::string>& Args)
 {
 	if( Args.size() == 1 )
 	{
-		std::cout << Info() << std::endl;
+		std::cout << Info();
+		std::cout << "Available Swatches: " << std::endl;
+		WIN32_FIND_DATA Finder;
+		HANDLE hFind = FindFirstFile(
+			(SaiPal::Instance().GetDirectory() + "Swatches\\*.png").c_str(),
+			&Finder);
+		if( hFind == INVALID_HANDLE_VALUE )
+		{
+			std::cout << "No swatch files found" << std::endl;
+			return;
+		}
+		do
+		{
+			if( !(Finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) )
+			{
+				std::string SwatchName(Finder.cFileName);
+				//remove extension
+				SwatchName = SwatchName.substr(
+					0,
+					SwatchName.find_last_of('.'));
+				std::cout << "-" << SwatchName << std::endl;
+			}
+		} while( FindNextFile(hFind, &Finder) != 0 );
 	}
 	if( Args.size() >= 2 )
 	{
