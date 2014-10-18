@@ -25,7 +25,7 @@ SaiPal::SaiPal()
 	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << " of PaintTool Sai" << std::endl;
-
+	std::cout << "Currently running from: " << GetDirectory() << std::endl;
 	unsigned int ConsoleWidth = 80;
 	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
 	if( GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleBuf) )
@@ -51,7 +51,7 @@ SaiPal::SaiPal()
 							  FOREGROUND_GREEN |
 							  FOREGROUND_INTENSITY);
 
-	::CreateDirectoryA("SaiPal", NULL);
+	::CreateDirectoryA(GetDirectory().c_str(), NULL);
 
 	//Command list
 	Commands["help"] = nullptr;
@@ -72,6 +72,31 @@ SaiPal::~SaiPal()
 			delete it->second;
 		}
 	}
+}
+
+namespace
+{
+	static void HandleFinder()
+	{
+	};
+}
+std::string SaiPal::GetDirectory()
+{
+	char Path[MAX_PATH];
+	HMODULE hMod;
+	if( !GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+		GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+		(LPCSTR)&::HandleFinder,
+		&hMod) )
+	{
+		int Error = GetLastError();
+		std::cout << "Unable to resolve current directory" << std::endl;
+	}
+	GetModuleFileNameA(hMod, Path, sizeof(Path));
+	std::string SaiPalDir(Path);
+	SaiPalDir = SaiPalDir.substr(0, std::string(SaiPalDir).find_last_of('\\') + 1);
+	SaiPalDir += "SaiPal\\";
+	return SaiPalDir;;
 }
 
 void SaiPal::Tick(const std::chrono::duration<double> Delta)

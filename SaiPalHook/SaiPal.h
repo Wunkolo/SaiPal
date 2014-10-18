@@ -15,6 +15,9 @@ public:
 	SaiPal();
 	~SaiPal();
 
+	//Saipal directory along-side the dll file. Use for reading/writing.
+	std::string GetDirectory();
+
 	void Tick(const std::chrono::duration<double> Delta);
 
 	SaiSession GetSession()
