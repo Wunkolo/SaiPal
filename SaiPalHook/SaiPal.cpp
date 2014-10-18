@@ -25,7 +25,12 @@ SaiPal::SaiPal()
 	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << " of PaintTool Sai" << std::endl;
-	std::cout << "Currently running from: " << GetDirectory() << std::endl;
+	std::cout << "Currently running from: ";
+	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+							  FOREGROUND_BLUE |
+							  FOREGROUND_GREEN |
+							  FOREGROUND_INTENSITY);
+	std::cout << GetDirectory() << std::endl;
 	unsigned int ConsoleWidth = 80;
 	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
 	if( GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleBuf) )

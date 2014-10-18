@@ -5,6 +5,8 @@
 
 Capture::Capture() : Running(false), Timer(0.0), Delay(FLT_MAX)
 {
+	//Create Captures Directory
+	::CreateDirectoryA((SaiPal::Instance().GetDirectory() + "Captures").c_str(), NULL);
 }
 
 Capture::~Capture()
@@ -14,6 +16,7 @@ Capture::~Capture()
 std::string Capture::Info() const
 {
 	return
+		"Capture Directory: " + (SaiPal::Instance().GetDirectory() + "Captures\n") +
 		"'capture' captures a single frame of the currently open document.\n"
 		"'capture start [interval]' captures a frame every [interval] seconds.\n"
 		"'capture stop' stops the current capture.\n"
@@ -43,7 +46,9 @@ void Capture::Run(const std::vector<std::string>& Args)
 		if( Args.size() == 1 )
 		{
 			CaptureCanvas();
-			std::cout << "Canvas captured" << std::endl;
+			std::cout << "Canvas saved to: "
+				<< (SaiPal::Instance().GetDirectory() + "Captures\\")
+				<< std::endl;
 		}
 		if( Args.size() >= 2 )
 		{
@@ -137,19 +142,18 @@ void Capture::CaptureCanvas()
 		SaiCanvas Canvas(
 			SaiPal::Instance().GetSession().ActiveCanvas()[0]);
 		std::string Path = Canvas.GetName();
+		//Remove .sai extension
 		Path = Path.substr(
 			Path.find_last_of('\\') == std::string::npos ? 0 : Path.find_last_of('\\') + 1,
 			std::string::npos);
 		Path.erase(Path.begin() + Path.find_last_of('.'), Path.end());
-		::CreateDirectory("SaiPal", 0);
-		::CreateDirectory(std::string("SaiPal\\" + Path).c_str(), 0);
-		Path = "SaiPal\\" + Path + "\\" + Path;
 
 		LARGE_INTEGER time;
 		QueryPerformanceCounter(&time);
 
 		Path += " [" + std::to_string(time.QuadPart) + "]";
 		Path += ".png";
+		Path = SaiPal::Instance().GetDirectory() + "Captures\\" + Path;
 		Canvas.CaptureImage(Path);
 	}
 	else
