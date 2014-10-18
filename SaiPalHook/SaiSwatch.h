@@ -12,8 +12,15 @@ public:
 	//12 x 13
 	unsigned int GetSwatchRGBA(unsigned char X,
 							   unsigned char Y);
-	unsigned int GetSwatchARGB(unsigned char X,
+	unsigned int GetSwatchBGRA(unsigned char X,
 							   unsigned char Y);
+	//12 x 13
+	void SetSwatchRGBA(unsigned char X,
+					   unsigned char Y,
+					   unsigned int Color);
+	void SetSwatchBGRA(unsigned char X,
+					   unsigned char Y,
+					   unsigned int Color);
 
 	//BGRA pixel array
 	unsigned int* RawPtr();

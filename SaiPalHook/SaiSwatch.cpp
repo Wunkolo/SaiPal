@@ -37,15 +37,15 @@ unsigned int SaiSwatch::GetSwatchRGBA(unsigned char X,
 	{
 		return 0;
 	}
-	unsigned int Pixel = GetSwatchARGB(X, Y);
-	//BGRA -> RGBA
-	Pixel = (((Pixel & 0x000000FF) << 24) |
-			 ((Pixel & 0x0000FF00) << 8) |
-			 ((Pixel & 0x00FF0000) >> 8) |
-			 ((Pixel & 0xFF000000) >> 24));
+	unsigned int Pixel = GetSwatchBGRA(X, Y);
+	// BGRA -> RGBA
+	Pixel = (
+		(Pixel & 0x00ff0000) >> 16) |      //Blue
+		((Pixel & 0x000000ff) << 16) |     //Red
+		(Pixel & 0xff00ff00);
 	return Pixel;
 }
-unsigned int SaiSwatch::GetSwatchARGB(unsigned char X,
+unsigned int SaiSwatch::GetSwatchBGRA(unsigned char X,
 									  unsigned char Y)
 {
 	if( !Swatch )
@@ -56,7 +56,51 @@ unsigned int SaiSwatch::GetSwatchARGB(unsigned char X,
 	{
 		return 0;
 	}
-	return Swatch(X + Y * 13).asUint();
+	return Swatch(X + Y * SwatchWidth).asUint();
+}
+
+void SaiSwatch::SetSwatchRGBA(unsigned char X,
+							  unsigned char Y,
+							  unsigned int Color)
+{
+	if( !Swatch )
+	{
+		return;
+	}
+	if( X > 12 || Y > 13 )
+	{
+		return;
+	}
+	// RGBA -> BGRA
+	Color = (
+		(Color & 0x00ff0000) >> 16) |      //Blue
+		((Color & 0x000000ff) << 16) |     //Red
+		(Color & 0xff00ff00);
+	SetSwatchBGRA(X, Y, Color);
+	RedrawWindow(SaiPal::Instance().GetSession().GetSwatchWindow(),
+				 0,
+				 0,
+				 RDW_INVALIDATE);
+}
+void SaiSwatch::SetSwatchBGRA(unsigned char X,
+							  unsigned char Y,
+							  unsigned int Color)
+{
+	if( !Swatch )
+	{
+		return;
+	}
+	if( X > 12 || Y > 13 )
+	{
+		return;
+	}
+	*(unsigned int*)Swatch(X + Y * SwatchWidth,
+						   sizeof(unsigned int)) = Color;
+
+	RedrawWindow(SaiPal::Instance().GetSession().GetSwatchWindow(),
+				 0,
+				 0,
+				 RDW_INVALIDATE);
 }
 
 unsigned int* SaiSwatch::RawPtr()
