@@ -26,7 +26,8 @@ public:
 					  unsigned int Height = 500,
 					  unsigned short Args = 1);
 
-	SaiSwatch GetSwatches();
+	HWND GetSwatchWindow();
+	SaiSwatch GetSwatch();
 	SaiColor GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);
 	void SetPrimaryColor(const SaiColor& NewColor);

@@ -34,6 +34,10 @@ HWND SaiSession::GetWindow()
 
 void SaiSession::SetStatusText(const std::string Text)
 {
+	if( !Session )
+	{
+		return;
+	}
 	HWND StatusTextHandle = Session(0x10C).as<HWND>();
 	SetWindowTextA(StatusTextHandle, Text.c_str());
 	RedrawWindow(StatusTextHandle, 0, 0, 1);
@@ -68,7 +72,15 @@ Pointer SaiSession::NewCanvas(std::string CanvasName,
 	return nullptr;
 }
 
-SaiSwatch SaiSession::GetSwatches()
+HWND SaiSession::GetSwatchWindow()
+{
+	if( !Session )
+	{
+		return HWND();
+	}
+	return Session(0xF8).as<HWND>();
+}
+SaiSwatch SaiSession::GetSwatch()
 {
 	return SaiSwatch(Session(0x886));
 }

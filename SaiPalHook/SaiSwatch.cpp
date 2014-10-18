@@ -13,6 +13,8 @@
 #include "stb_image.h"
 #include "stb_image_resize.h"
 
+#include "SaiPal.h"
+
 SaiSwatch::SaiSwatch() : Swatch(nullptr)
 {
 }
@@ -195,5 +197,9 @@ bool SaiSwatch::ReadSwatch(const std::string Path)
 
 	memcpy(Swatch, Buffer, SwatchHeight*SwatchWidth * 4);
 	_aligned_free(Buffer);
+	RedrawWindow(SaiPal::Instance().GetSession().GetSwatchWindow(),
+				 0,
+				 0,
+				 RDW_INVALIDATE);
 	return true;
 }
