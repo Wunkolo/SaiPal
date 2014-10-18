@@ -66,7 +66,6 @@ void Swatch::Run(const std::vector<std::string>& Args)
 				LARGE_INTEGER time;
 				QueryPerformanceCounter(&time);
 				Path += "Swatch [" + std::to_string(time.QuadPart) + "].png";
-				std::cout << Path << std::endl;
 				if( SaiPal::Instance().GetSession().
 				   GetSwatch()
 				   .SaveSwatch(Path) )
