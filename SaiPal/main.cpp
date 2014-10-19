@@ -154,11 +154,15 @@ int main()
 	SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << "Identifying Sai version...";
 	HANDLE SaiHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, ProcessID);
+	std::cout << "Process opened" << std::dec << std::endl;
 	if( SaiHandle )
 	{
 		char filePath[MAX_PATH];
 		if( GetModuleFileNameEx(SaiHandle, NULL, filePath, MAX_PATH) )
 		{
+			std::cout << "Getting process file name: " << __LINE__ << std::endl;
+			std::cout << filePath << std::endl;
+			std::cout << "Closing handle: " << __LINE__ << std::endl;
 			CloseHandle(SaiHandle);
 			HANDLE SaiExe = CreateFile(filePath,
 									   GENERIC_READ,
@@ -167,18 +171,27 @@ int main()
 									   OPEN_EXISTING,
 									   FILE_ATTRIBUTE_NORMAL,
 									   NULL);
+			std::cout << "File Opened: " << __LINE__ << std::endl;
 			if( SaiExe != INVALID_HANDLE_VALUE )
 			{
 				unsigned int Size = GetFileSize(SaiExe, nullptr);
-				char* Buffer = new char[Size];
-				if( ReadFile(SaiExe, Buffer, Size, nullptr, nullptr) )
+				if( Size == 0xFFFFFFFF )
 				{
+					std::cout << "Error calulating file size: " << GetLastError() << std::endl;
+				}
+				char* Buffer = new char[Size];
+				unsigned int BytesRead;
+				if( ReadFile(SaiExe, Buffer, Size, (DWORD*)&BytesRead, nullptr) )
+				{
+					CloseHandle(SaiExe);
+					std::cout << "Calculating checksum..." << std::endl;
 					SaiCheckSum = crc32(0, Buffer, Size);
+					delete[] Buffer;
 				}
 				else
 				{
-					delete[] Buffer;
 					CloseHandle(SaiExe);
+					delete[] Buffer;
 					SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
 					std::cout << "Unable to read sai executable." << std::endl;
 					system("pause");
