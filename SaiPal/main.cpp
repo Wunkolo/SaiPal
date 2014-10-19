@@ -158,9 +158,8 @@ int main()
 		char filePath[MAX_PATH];
 		if( GetModuleFileNameEx(SaiHandle, NULL, filePath, MAX_PATH) )
 		{
-			std::cout << "Getting process file name: " << __LINE__ << std::endl;
+			std::cout << "Getting process file location: " << __LINE__ << std::endl;
 			std::cout << filePath << std::endl;
-			std::cout << "Closing handle: " << __LINE__ << std::endl;
 			CloseHandle(SaiHandle);
 			HANDLE SaiExe = CreateFile(filePath,
 									   GENERIC_READ,
