@@ -134,7 +134,7 @@ int main()
 	DWORD Address = 0;
 	DWORD ProcessID;
 	HWND SaiProcess;
-	SaiProcess = FindWindowA("sfl_window_class", "SAI");
+	SaiProcess = FindWindowA("sfl_window_class", nullptr);
 	if( SaiProcess == NULL )
 	{
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
