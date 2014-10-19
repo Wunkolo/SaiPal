@@ -53,7 +53,7 @@ public:
 		{
 			return (T&)_Pointer;
 		}
-		return T();
+		return *new T();
 	}
 
 	//Returns the position of the pointer offset by a number of bytes(or stride value)
@@ -91,7 +91,7 @@ public:
 		return as<unsigned int>();
 	}
 
-	inline unsigned short& asUShort() const
+	inline unsigned short& asUshort() const
 	{
 		return as<unsigned short>();
 	}
@@ -99,6 +99,11 @@ public:
 	inline unsigned char& asUchar() const
 	{
 		return as<unsigned char>();
+	}
+
+	inline float& asFloat() const
+	{
+		return as<float>();
 	}
 
 	inline void Set(unsigned int Pointer)
