@@ -43,6 +43,11 @@ HWND SaiCanvas::GetWindow()
 	return Canvas[0x18](0x18).as<HWND>();
 }
 
+Pointer SaiCanvas::GetFirstLayer()
+{
+	return Canvas[0x168];
+}
+
 bool SaiCanvas::CaptureImage(const std::string Path)
 {
 	if( !Canvas )

@@ -18,6 +18,8 @@ public:
 
 	HWND GetWindow();
 
+	Pointer GetFirstLayer();
+
 	bool CaptureImage(const std::string Path);
 
 	inline unsigned int Width() const;
