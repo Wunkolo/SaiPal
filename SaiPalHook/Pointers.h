@@ -47,11 +47,11 @@ public:
 	}
 
 	template <typename T>
-	inline T as() const
+	inline T& as() const
 	{
 		if( _Pointer )
 		{
-			return *(T*)_Pointer;
+			return (T&)_Pointer;
 		}
 		return T();
 	}
@@ -86,17 +86,17 @@ public:
 		return _Pointer != nullptr ? true : false;
 	}
 
-	inline unsigned int asUint() const
+	inline unsigned int& asUint() const
 	{
 		return as<unsigned int>();
 	}
 
-	inline unsigned short asUShort() const
+	inline unsigned short& asUShort() const
 	{
 		return as<unsigned short>();
 	}
 
-	inline unsigned char asUchar() const
+	inline unsigned char& asUchar() const
 	{
 		return as<unsigned char>();
 	}
