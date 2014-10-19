@@ -73,6 +73,7 @@ SaiPal::SaiPal()
 	Commands["capture"] = new Capture();
 	Commands["color"] = new Color();
 	Commands["swatch"] = new Swatch();
+	Commands["test"] = new Test();
 
 	Session.SetStatusText("SaiPal loaded!");
 }
