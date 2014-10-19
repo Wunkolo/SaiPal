@@ -4,6 +4,9 @@
 #include "Pointers.h"
 #include "SaiTypes.h"
 
+#define NOMINMAX
+#include <Windows.h>
+
 class SaiCanvas
 {
 public:
@@ -12,6 +15,8 @@ public:
 	~SaiCanvas();
 
 	std::string GetName() const;
+
+	HWND GetWindow();
 
 	bool CaptureImage(const std::string Path);
 

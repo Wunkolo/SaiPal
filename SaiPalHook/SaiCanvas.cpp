@@ -38,6 +38,11 @@ std::string SaiCanvas::GetName() const
 #endif
 }
 
+HWND SaiCanvas::GetWindow()
+{
+	return Canvas[0x18](0x18).as<HWND>();
+}
+
 bool SaiCanvas::CaptureImage(const std::string Path)
 {
 	if( !Canvas )
