@@ -134,13 +134,11 @@ int main()
 	DWORD Address = 0;
 	DWORD ProcessID;
 	HWND SaiProcess;
-
-	std::cout << std::hex << std::uppercase;
-	SaiProcess = FindWindow("sfl_window_class", NULL);
-	if( !SaiProcess )
+	SaiProcess = FindWindowA("sfl_window_class", "SAI");
+	if( SaiProcess == NULL )
 	{
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
-		std::cout << "Sai process not found (Error code: " << GetLastError() << ")" << std::endl;
+		std::cout << "Sai process not found (Error code: " << std::dec << GetLastError() << ")" << std::endl;
 		system("pause");
 		return 1;
 	}
@@ -154,9 +152,9 @@ int main()
 	SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << "Identifying Sai version...";
 	HANDLE SaiHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, ProcessID);
-	std::cout << "Process opened" << std::dec << std::endl;
 	if( SaiHandle )
 	{
+		std::cout << "Process opened" << std::dec << std::endl;
 		char filePath[MAX_PATH];
 		if( GetModuleFileNameEx(SaiHandle, NULL, filePath, MAX_PATH) )
 		{
@@ -220,7 +218,7 @@ int main()
 	else
 	{
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
-		std::cout << "Failed to open process for reading." << std::endl;
+		std::cout << "Failed to open process for reading. (Error code: " << std::dec << GetLastError() << ")" << std::endl;
 		system("pause");
 		return 1;
 	}
@@ -241,7 +239,7 @@ int main()
 		break;
 	default:
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
-		std::cout << "Unknown sai version: 0x" << SaiCheckSum << std::endl;
+		std::cout << "Unknown sai version: 0x" << std::hex << SaiCheckSum << std::endl;
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED | FOREGROUND_INTENSITY);
 		std::cout << "Input the version of your Sai.exe" << std::endl;
 		SetConsoleTextAttribute(hStdout, FOREGROUND_RED);
