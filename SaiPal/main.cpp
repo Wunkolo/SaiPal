@@ -77,7 +77,7 @@ int main()
 							FOREGROUND_RED |
 							FOREGROUND_GREEN |
 							FOREGROUND_INTENSITY);
-	std::cout << "SaiPal - Build date (" << __DATE__ << ")" << std::endl;
+	std::cout << "SaiPal - Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
 	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_BLUE |
 							FOREGROUND_GREEN |
