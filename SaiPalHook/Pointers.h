@@ -47,13 +47,13 @@ public:
 	}
 
 	template <typename T>
-	inline T& as() const
+	inline T as() const
 	{
 		if( _Pointer )
 		{
-			return (T&)_Pointer;
+			return *(T*)_Pointer;
 		}
-		return *new T();
+		return T();
 	}
 
 	//Returns the position of the pointer offset by a number of bytes(or stride value)
@@ -86,24 +86,19 @@ public:
 		return _Pointer != nullptr ? true : false;
 	}
 
-	inline unsigned int& asUint() const
+	inline unsigned int asUint() const
 	{
 		return as<unsigned int>();
 	}
 
-	inline unsigned short& asUshort() const
+	inline unsigned short asUshort() const
 	{
 		return as<unsigned short>();
 	}
 
-	inline unsigned char& asUchar() const
+	inline unsigned char asUchar() const
 	{
 		return as<unsigned char>();
-	}
-
-	inline float& asFloat() const
-	{
-		return as<float>();
 	}
 
 	inline void Set(unsigned int Pointer)
