@@ -80,6 +80,25 @@ HWND SaiSession::GetSwatchWindow()
 	}
 	return Session(0xF8).as<HWND>();
 }
+
+HWND SaiSession::GetLayerListWindow()
+{
+	if( !Session )
+	{
+		return HWND();
+	}
+	return Session(0xE4).as<HWND>();
+}
+
+HWND SaiSession::GetPreviewWindow()
+{
+	if( !Session )
+	{
+		return HWND();
+	}
+	return Session(0xD8).as<HWND>();
+}
+
 SaiSwatch SaiSession::GetSwatch()
 {
 	return SaiSwatch(Session(0x886));

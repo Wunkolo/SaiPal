@@ -27,6 +27,8 @@ public:
 					  unsigned short Args = 1);
 
 	HWND GetSwatchWindow();
+	HWND GetLayerListWindow();
+	HWND GetPreviewWindow();
 	SaiSwatch GetSwatch();
 	SaiColor GetPrimaryColor() const;
 	void SetPrimaryColor(unsigned char R, unsigned char G, unsigned char B);
