@@ -116,6 +116,25 @@ std::string SaiPal::GetDirectory()
 
 void SaiPal::Tick(const std::chrono::duration<double> Delta)
 {
+	static double Timer(0);
+	static std::string Strings[] = {
+		"Cool!",
+		"Nice Drawing!",
+		"Wow!",
+		"Hey you're getting better!",
+		"Nice.",
+		"Woah dude!",
+		"Awesome!",
+		"Keep at it!",
+		"Amazing!!!",
+		"I should commission you!",
+		"Dang!!" };
+	Timer += Delta.count();
+	if( Timer >= 0.25 )
+	{
+		Timer = 0;
+		Session.SetStatusText(Strings[rand() % 11]);
+	}
 	PrintConsole();
 	for( std::map<std::string, SaiModule*>::iterator it = Commands.begin(); it != Commands.end(); ++it )
 	{
