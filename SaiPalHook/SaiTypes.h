@@ -2,6 +2,24 @@
 #include "SaiCanvas.h"
 #include "SaiSwatch.h"
 
+enum SaiBrushType
+{
+	Pencil = 1,
+	AirBrush = 2,
+	Brush = 3,
+	Water = 4,
+	Marker = 5,
+	Eraser = 16,
+	MaskPen = 17,
+	Masker = 18,
+	// Ink Mode Brushes
+	InkPen = 48,
+	InkParam = 52,
+	Inkers = 53,
+	InkCurve = 54,
+	InkLine = 55
+};
+
 #pragma pack()
 struct SaiColor
 {
