@@ -2,122 +2,107 @@
 #include "SaiCanvas.h"
 #include "SaiSwatch.h"
 
-enum SaiLayerType : unsigned int
+namespace SaiLayer
 {
-	RootLayer = 0x00,	// Parent Canvas layer object
-	Layer = 0x03,		// Regular Layer
-	Unknown4 = 0x4,		// Unknown
-	Linework = 0x05,	// Vector Linework Layer
-	Mask = 0x06,		// Masks applied to any layer object
-	Unknown7 = 0x07,	// Unknown
-	Set = 0x08			// Layer Folder
-};
+	enum Type : unsigned int
+	{
+		RootLayer = 0x00,	// Parent Canvas layer object
+		Layer = 0x03,		// Regular Layer
+		Unknown4 = 0x4,		// Unknown
+		Linework = 0x05,	// Vector Linework Layer
+		Mask = 0x06,		// Masks applied to any layer object
+		Unknown7 = 0x07,	// Unknown
+		Set = 0x08			// Layer Folder
+	};
 
-enum SaiLayerBlend : unsigned int
-{
-	Pass = 0x00,		// Pass-through. Only available to Sets(folders)
-	Normal = 0x01,
-	Multiply = 0x02,
-	Screen = 0x03,
-	Overlay = 0x04,
-	Luminosity = 0x05,
-	Shade = 0x06,
-	LumiShade = 0x07,	// Lumi & Shade
-	Binary = 0x08		// Binary Color
-};
+	enum Blend : unsigned int
+	{
+		Pass = 0x00,		// Pass-through. Only available to Sets(folders)
+		Normal = 0x01,
+		Multiply = 0x02,
+		Screen = 0x03,
+		Overlay = 0x04,
+		Luminosity = 0x05,
+		Shade = 0x06,
+		LumiShade = 0x07,	// Lumi & Shade
+		Binary = 0x08		// Binary Color
+	};
+}
 
-enum SaiBrushType : unsigned int
+namespace SaiBrush
 {
-	Pencil = 1,
-	AirBrush = 2,
-	Brush = 3,
-	Water = 4,
-	Marker = 5,
-	Eraser = 16,
-	MaskPen = 17,
-	Masker = 18,
-	// Ink Mode Brushes
-	InkPen = 48,
-	InkParam = 52,
-	Inkers = 53,
-	InkCurve = 54,
-	InkLine = 55
-};
+	enum Type : unsigned int
+	{
+		Pencil = 1,
+		AirBrush = 2,
+		Brush = 3,
+		Water = 4,
+		Marker = 5,
+		Eraser = 16,
+		MaskPen = 17,
+		Masker = 18,
+		// Ink Mode Brushes
+		InkPen = 48,
+		InkParam = 52,
+		Inkers = 53,
+		InkCurve = 54,
+		InkLine = 55
+	};
 
-enum SaiBrushEdgeShape : unsigned int
-{
-	Gaussian = 0,		// /'\ | Gaussian
-	Sigmoid = 1,		// /"\ | Sigmoid
-	Gompertz = 2,		// /î\ | Gompertz
-	Square = 3			// |î| | Square
-};
+	enum EdgeShape : unsigned int
+	{
+		Gaussian = 0,		// /'\ | Gaussian
+		Sigmoid = 1,		// /"\ | Sigmoid
+		Gompertz = 2,		// /î\ | Gompertz
+		Square = 3			// |î| | Square
+	};
 
-enum SaiBrushPressureFlag : unsigned int
-{
-	Required = 0x01,	// Always set to at least 1
-	Density = 0x02,
-	Size = 0x04,
-	Blend = 0x08,
-	KeepOpacity = 0x16
-};
+	enum PressureFlag : unsigned int
+	{
+		Required = 0x01,	// Always set to at least 1
+		Density = 0x02,
+		Size = 0x04,
+		Blend = 0x08,
+		KeepOpacity = 0x16
+	};
 
-enum SaiBrushStrokeStabilizer : unsigned int
-{
-	NotSpecified = 0,
-	_0 = 1,
-	_1 = 2,
-	_2 = 3,
-	_3 = 4,
-	_4 = 5,
-	_5 = 6,
-	_6 = 7,
-	_7 = 8,
-	_8 = 9,
-	_9 = 10,
-	_10 = 11,
-	_11 = 12,
-	_12 = 13,
-	_13 = 14,
-	_14 = 15,
-	_15 = 16,
-	S1 = 0x80 && 1,
-	S2 = 0x80 && 2,
-	S3 = 0x80 && 3,
-	S4 = 0x80 && 4,
-	S5 = 0x80 && 5,
-	S6 = 0x80 && 6,
-	S7 = 0x80 && 7,
-	S8 = 0x80 && 8
-};
+	enum Stabilizer : unsigned int
+	{
+		NotSpecified = 0,
+		N0 = 1,
+		N1 = 2,
+		N2 = 3,
+		N3 = 4,
+		N4 = 5,
+		N5 = 6,
+		N6 = 7,
+		N7 = 8,
+		N8 = 9,
+		N9 = 10,
+		N10 = 11,
+		N11 = 12,
+		N12 = 13,
+		N13 = 14,
+		N14 = 15,
+		N15 = 16,
+		S1 = 0x80 && 1,
+		S2 = 0x80 && 2,
+		S3 = 0x80 && 3,
+		S4 = 0x80 && 4,
+		S5 = 0x80 && 5,
+		S6 = 0x80 && 6,
+		S7 = 0x80 && 7,
+		S8 = 0x80 && 8
+	};
 
-enum SaiBrushPressureStabilizer : unsigned int
-{
-	NotSpecified = 0,
-	_0 = 1,
-	_1 = 2,
-	_2 = 3,
-	_3 = 4,
-	_4 = 5,
-	_5 = 6,
-	_6 = 7,
-	_7 = 8,
-	_8 = 9,
-	_9 = 10,
-	_10 = 11,
-	_11 = 12,
-	_12 = 13,
-	_13 = 14,
-	_14 = 15,
-	_15 = 16,
-};
-
-enum SaiBrushQuality : unsigned int
-{
-	Fastest = 1,
-	Smooth = 2,
-	Smoother = 4,
-	Smoothest = 8
-};
+	enum Quality : unsigned int
+	{
+		Fastest = 1,
+		Smooth = 2,
+		Smoother = 4,
+		Smoothest = 8
+	};
+}
 
 #pragma pack()
 struct SaiColor
