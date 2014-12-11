@@ -2,6 +2,30 @@
 #include "SaiCanvas.h"
 #include "SaiSwatch.h"
 
+enum SaiLayerType
+{
+	RootLayer = 0x00,	// Parent Canvas layer object
+	Layer = 0x03,		// Regular Layer
+	Unknown4 = 0x4,		// Unknown
+	Linework = 0x05,	// Vector Linework Layer
+	Mask = 0x06,		// Masks applied to any layer object
+	Unknown7 = 0x07,	// Unknown
+	Set = 0x08			// Layer Folder
+};
+
+enum SaiLayerBlend
+{
+	Pass = 0x00,		// Pass-through. Only available to Sets(folders)
+	Normal = 0x01,
+	Multiply = 0x02,
+	Screen = 0x03,
+	Overlay = 0x04,
+	Luminosity = 0x05,
+	Shade = 0x06,
+	LumiShade = 0x07,	// Lumi & Shade
+	Binary = 0x08		// Binary Color
+};
+
 enum SaiBrushType
 {
 	Pencil = 1,
