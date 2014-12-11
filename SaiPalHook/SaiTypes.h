@@ -2,7 +2,7 @@
 #include "SaiCanvas.h"
 #include "SaiSwatch.h"
 
-enum SaiLayerType
+enum SaiLayerType : unsigned int
 {
 	RootLayer = 0x00,	// Parent Canvas layer object
 	Layer = 0x03,		// Regular Layer
@@ -13,7 +13,7 @@ enum SaiLayerType
 	Set = 0x08			// Layer Folder
 };
 
-enum SaiLayerBlend
+enum SaiLayerBlend : unsigned int
 {
 	Pass = 0x00,		// Pass-through. Only available to Sets(folders)
 	Normal = 0x01,
@@ -26,7 +26,7 @@ enum SaiLayerBlend
 	Binary = 0x08		// Binary Color
 };
 
-enum SaiBrushType
+enum SaiBrushType : unsigned int
 {
 	Pencil = 1,
 	AirBrush = 2,
