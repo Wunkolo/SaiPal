@@ -44,6 +44,81 @@ enum SaiBrushType : unsigned int
 	InkLine = 55
 };
 
+enum SaiBrushEdgeShape : unsigned int
+{
+	Gaussian = 0,		// /'\ | Gaussian
+	Sigmoid = 1,		// /"\ | Sigmoid
+	Gompertz = 2,		// /î\ | Gompertz
+	Square = 3			// |î| | Square
+};
+
+enum SaiBrushPressureFlag : unsigned int
+{
+	Required = 0x01,	// Always set to at least 1
+	Density = 0x02,
+	Size = 0x04,
+	Blend = 0x08,
+	KeepOpacity = 0x16
+};
+
+enum SaiBrushStrokeStabilizer : unsigned int
+{
+	NotSpecified = 0,
+	_0 = 1,
+	_1 = 2,
+	_2 = 3,
+	_3 = 4,
+	_4 = 5,
+	_5 = 6,
+	_6 = 7,
+	_7 = 8,
+	_8 = 9,
+	_9 = 10,
+	_10 = 11,
+	_11 = 12,
+	_12 = 13,
+	_13 = 14,
+	_14 = 15,
+	_15 = 16,
+	S1 = 0x80 && 1,
+	S2 = 0x80 && 2,
+	S3 = 0x80 && 3,
+	S4 = 0x80 && 4,
+	S5 = 0x80 && 5,
+	S6 = 0x80 && 6,
+	S7 = 0x80 && 7,
+	S8 = 0x80 && 8
+};
+
+enum SaiBrushPressureStabilizer : unsigned int
+{
+	NotSpecified = 0,
+	_0 = 1,
+	_1 = 2,
+	_2 = 3,
+	_3 = 4,
+	_4 = 5,
+	_5 = 6,
+	_6 = 7,
+	_7 = 8,
+	_8 = 9,
+	_9 = 10,
+	_10 = 11,
+	_11 = 12,
+	_12 = 13,
+	_13 = 14,
+	_14 = 15,
+	_15 = 16,
+};
+
+enum SaiBrushQuality : unsigned int
+{
+	Fastest = 1,
+	Smooth = 2,
+	Smoother = 4,
+	Smoothest = 8
+};
+
 #pragma pack()
 struct SaiColor
 {
