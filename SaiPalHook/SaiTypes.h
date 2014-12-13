@@ -29,7 +29,7 @@ namespace SaiLayer
 	};
 }
 
-namespace SaiBrush
+namespace SaiTool
 {
 	enum Type : unsigned int
 	{
