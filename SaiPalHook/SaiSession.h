@@ -26,6 +26,16 @@ public:
 					  unsigned int Height = 500,
 					  unsigned short Args = 1);
 
+	// One of the 64 Brushes [0-63]
+	Pointer GetBrush(unsigned int BrushNo = 0);
+	// 4 Columns, 16 Rows. [0-3],[0-15]
+	Pointer GetBrushAt(unsigned char Column = 0, unsigned char Row = 0);
+
+	// One of the 64 Ink Brushes [0-63]
+	Pointer GetInkBrush(unsigned int BrushNo = 0);
+	// 4 Columns, 16 Rows. [0-3],[0-15]
+	Pointer GetInkBrushAt(unsigned char Column = 0, unsigned char Row = 0);
+
 	HWND GetSwatchWindow();
 	HWND GetLayerListWindow();
 	HWND GetPreviewWindow();

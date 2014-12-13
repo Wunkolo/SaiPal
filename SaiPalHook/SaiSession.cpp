@@ -72,6 +72,42 @@ Pointer SaiSession::NewCanvas(std::string CanvasName,
 	return nullptr;
 }
 
+Pointer SaiSession::GetBrush(unsigned int BrushNo)
+{
+	if( BrushNo > 63 )
+	{
+		return Pointer();
+	}
+
+	return Session(0x548)(BrushNo, sizeof(int))[0];
+}
+Pointer SaiSession::GetBrushAt(unsigned char Column, unsigned char Row)
+{
+	if( Column > 3 || Row > 15 )
+	{
+		return Pointer();
+	}
+	return Session(0x548)(Column + (Row * 4), sizeof(int))[0];
+}
+
+Pointer SaiSession::GetInkBrush(unsigned int BrushNo)
+{
+	if( BrushNo > 63 )
+	{
+		return Pointer();
+	}
+
+	return Session(0x658)(BrushNo, sizeof(int))[0];
+}
+Pointer SaiSession::GetInkBrushAt(unsigned char Column, unsigned char Row)
+{
+	if( Column > 3 || Row > 15 )
+	{
+		return Pointer();
+	}
+	return Session(0x658)(Column + (Row * 4), sizeof(int))[0];
+}
+
 HWND SaiSession::GetSwatchWindow()
 {
 	if( !Session )
