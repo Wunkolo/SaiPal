@@ -1,6 +1,4 @@
 #pragma once
-#include "SaiCanvas.h"
-#include "SaiSwatch.h"
 
 namespace SaiLayer
 {
@@ -33,6 +31,7 @@ namespace SaiTool
 {
 	enum Type : unsigned int
 	{
+		Unknown = 0,
 		Pencil = 1,
 		AirBrush = 2,
 		Brush = 3,
@@ -49,7 +48,7 @@ namespace SaiTool
 		InkLine = 55
 	};
 
-	enum EdgeShape : unsigned int
+	enum EdgeShape : unsigned char
 	{
 		Gaussian = 0,		// /'\ | Gaussian
 		Sigmoid = 1,		// /"\ | Sigmoid
@@ -192,3 +191,7 @@ struct Rect
 	}
 	unsigned int X, Y, Width, Height;
 };
+
+#include "SaiCanvas.h"
+#include "SaiSwatch.h"
+#include "SaiBrush.h"
