@@ -2,6 +2,8 @@
 #include "../SaiPal.h"
 #include <Windows.h>
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 
 Test::Test()
 {
@@ -91,6 +93,44 @@ void Test::Tick(const std::chrono::duration<double>& Delta)
 }
 void Test::Run(const std::vector<std::string>& Args)
 {
+	std::cout << "Brush Test:" << std::endl;
+
+	std::ofstream Dump("dump.txt");
+
+	Dump << std::fixed << std::setprecision(2);
+
+	for( unsigned int i = 0; i < 63; i++ )
+	{
+		Pointer BrushPtr = SaiPal::Instance().GetSession().GetBrush(i);
+		std::cout << (void*)BrushPtr << std::endl;
+		if( BrushPtr )
+		{
+			SaiBrush Brush(BrushPtr);
+			Dump << std::setw(16) << "Brush Name: "
+				<< std::setw(16) << Brush.GetName() << std::endl;
+			Dump << std::setw(16) << "Description: "
+				<< std::setw(16) << Brush.GetDescription() << std::endl;
+			Dump << std::setw(16) << "Meta Name: "
+				<< std::setw(16) << Brush.GetToolName() << std::endl;
+			Dump << std::setw(16) << "Type: "
+				<< std::setw(16) << Brush.GetType() << std::endl;
+			Dump << std::setw(16) << "Shortcut Key: "
+				<< std::setw(16) << Brush.GetShortcutKey() << std::endl;
+			Dump << std::setw(16) << "Current Size: "
+				<< std::setw(16) << Brush.GetSize() << std::endl;
+			Dump << std::setw(16) << "Min Size: "
+				<< std::setw(16) << Brush.GetMinSize() * 100 << '%' << std::endl;
+			char out[9] = { 0 };
+			_itoa(Brush.GetPressureFlags(), out, 2);
+			Dump << std::setw(16) << "PressureFlags: "
+				<< std::setw(16) << out << std::endl;
+
+			Dump << "---------------------------------------" << std::endl;
+		}
+	}
+
+	Dump.close();
+
 	if( Args.size() >= 2 )
 	{
 		if( !Args[1].compare("go") )
