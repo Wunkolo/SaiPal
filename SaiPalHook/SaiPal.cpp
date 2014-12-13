@@ -10,57 +10,73 @@
 
 #include "SaiModules.h"
 
-#define ps1 ">["
+#define ps1 "¯["
 
 SaiPal::SaiPal()
 {
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleOutputCP(437);
+
+	unsigned int ConsoleWidth = 80;
+	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
+	if( GetConsoleScreenBufferInfo(hStdout, &ConsoleBuf) )
+	{
+		ConsoleWidth = ConsoleBuf.dwSize.X;
+	}
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-	std::cout << "SaiPal thread created" << std::endl;
-	std::cout << "SaiHook.dll - DEElekgolo(DEElekgolo@gmail.com)\n\tCompile date: " << __DATE__ << " : " << __TIME__ << std::endl;
+	SetConsoleTextAttribute(hStdout,
+							FOREGROUND_RED |
+							FOREGROUND_GREEN |
+							FOREGROUND_INTENSITY);
+	std::cout << "SaiPalÄÄÂBuild date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
+	SetConsoleTextAttribute(hStdout,
+							FOREGROUND_BLUE |
+							FOREGROUND_GREEN |
+							FOREGROUND_INTENSITY);
+	std::cout << "\tÀDEElekgolo (DEElekgolo@gmail.com)\n";
+	SetConsoleTextAttribute(hStdout,
+							FOREGROUND_RED |
+							FOREGROUND_BLUE);
+	::SetConsoleTextAttribute(hStdout,
+							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << "This DLL is intended to be injected into version ";
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_RED | FOREGROUND_INTENSITY);
 	std::cout << VersionStr;
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << " of PaintTool Sai" << std::endl;
 	std::cout << "Enter \"";
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_BLUE |
 							  FOREGROUND_GREEN |
 							  FOREGROUND_INTENSITY);
 	std::cout << "help";
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	std::cout << "\" to get started!" << std::endl;
 	std::cout << "Current directory: ";
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_BLUE |
 							  FOREGROUND_GREEN |
 							  FOREGROUND_INTENSITY);
 	std::cout << GetDirectory() << std::endl;
-	unsigned int ConsoleWidth = 80;
-	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
-	if( GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &ConsoleBuf) )
-	{
-		ConsoleWidth = ConsoleBuf.dwSize.X;
-	}
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_RED |
 							FOREGROUND_BLUE);
-	std::cout << std::string(ConsoleWidth - 1, '=') << std::endl;
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	std::cout << std::string(ConsoleWidth - 1, 'Ä') << std::endl;
+	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_RED |
 							FOREGROUND_GREEN |
 							FOREGROUND_INTENSITY);
 
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_RED |
 							  FOREGROUND_GREEN |
 							  FOREGROUND_INTENSITY);
 	std::cout << ps1;
-	::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
+	::SetConsoleTextAttribute(hStdout,
 							  FOREGROUND_BLUE |
 							  FOREGROUND_GREEN |
 							  FOREGROUND_INTENSITY);
@@ -264,7 +280,7 @@ void SaiPal::PrintConsole()
 										  FOREGROUND_RED |
 										  FOREGROUND_GREEN |
 										  FOREGROUND_INTENSITY);
-				std::cout << ']' << std::endl;
+				std::cout << "]®" << std::endl;
 				//process command and execute it
 				if( Commands.count(Args[0]) == 1 &&
 				   Commands[Args[0]] != nullptr )
@@ -281,14 +297,14 @@ void SaiPal::PrintConsole()
 						if( Commands.count(Args[1]) == 1 &&
 						   Commands[Args[1]] != nullptr )
 						{
-							std::cout << std::setfill('=');
+							std::cout << std::setfill('Ä');
 							std::cout.width(48);
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED |
 													  FOREGROUND_GREEN |
 													  FOREGROUND_INTENSITY);
 							std::cout << std::left
-								<< Args[1]
+								<< ((char)std::toupper(Args[1][0]) + Args[1].substr(1))
 								<< std::endl;
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED |
@@ -297,14 +313,14 @@ void SaiPal::PrintConsole()
 						}
 						else if( !Args[1].compare("help") )
 						{
-							std::cout << std::setfill('=');
+							std::cout << std::setfill('Ä');
 							std::cout.width(48);
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED |
 													  FOREGROUND_GREEN |
 													  FOREGROUND_INTENSITY);
 							std::cout << std::left
-								<< "help"
+								<< "Help"
 								<< std::endl;
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED |
@@ -316,7 +332,7 @@ void SaiPal::PrintConsole()
 						}
 						else if( !Args[1].compare("history") )
 						{
-							std::cout << std::setfill('=');
+							std::cout << std::setfill('Ä');
 							std::cout.width(48);
 							::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 													  FOREGROUND_RED |
@@ -342,7 +358,7 @@ void SaiPal::PrintConsole()
 					}
 					else
 					{
-						std::cout << std::setfill('=');
+						std::cout << std::setfill('Ä');
 						std::map<std::string, SaiModule*>::iterator it;
 						for( it = Commands.begin(); it != Commands.end(); ++it )
 						{
@@ -354,7 +370,7 @@ void SaiPal::PrintConsole()
 														  FOREGROUND_GREEN |
 														  FOREGROUND_INTENSITY);
 								std::cout << std::left
-									<< it->first
+									<< ((char)std::toupper(it->first[0]) + it->first.substr(1))
 									<< std::endl;
 								::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 														  FOREGROUND_RED |
@@ -439,7 +455,7 @@ void SaiPal::PrintConsole()
 						it != Matches.end();
 						it++ )
 					{
-						std::cout << " -" << (*it) << std::endl;
+						std::cout << " Ä" << (*it) << std::endl;
 					}
 					std::string Prefix = Matches[0];
 					for( std::vector<std::string>::iterator it = Matches.begin() + 1;
@@ -508,7 +524,7 @@ void SaiPal::PrintConsole()
 				std::map<std::string, SaiModule*>::iterator it;
 				for( it = Commands.begin(); it != Commands.end(); ++it )
 				{
-					std::cout << " -" << it->first << std::endl;
+					std::cout << " Ä" << it->first << std::endl;
 				}
 				::SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
 										  FOREGROUND_RED |

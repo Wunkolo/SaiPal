@@ -66,6 +66,8 @@ int main()
 	DLLFiles["1.2.0"] = "SaiHook120.dll";
 
 	HANDLE hStdout = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleOutputCP(437);
+
 	unsigned int ConsoleWidth = 80;
 	CONSOLE_SCREEN_BUFFER_INFO ConsoleBuf;
 	if( GetConsoleScreenBufferInfo(hStdout, &ConsoleBuf) )
@@ -77,16 +79,16 @@ int main()
 							FOREGROUND_RED |
 							FOREGROUND_GREEN |
 							FOREGROUND_INTENSITY);
-	std::cout << "SaiPal - Build date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
+	std::cout << "SaiPalÄÄÂBuild date (" << __DATE__ << " : " << __TIME__ << ")" << std::endl;
 	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_BLUE |
 							FOREGROUND_GREEN |
 							FOREGROUND_INTENSITY);
-	std::cout << "\t-DEElekgolo (DEElekgolo.tumblr.com)\n";
+	std::cout << "\tÀDEElekgolo (DEElekgolo@gmail.com)\n";
 	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_RED |
 							FOREGROUND_BLUE);
-	std::cout << std::string(ConsoleWidth - 1, '=') << std::endl;
+	std::cout << std::string(ConsoleWidth - 1, 'Ä') << std::endl;
 	SetConsoleTextAttribute(hStdout,
 							FOREGROUND_RED |
 							FOREGROUND_GREEN |
@@ -261,7 +263,7 @@ int main()
 										FOREGROUND_RED |
 										FOREGROUND_GREEN |
 										FOREGROUND_INTENSITY);
-				std::cout << "\t-\"";
+				std::cout << "\tÄ\"";
 				SetConsoleTextAttribute(hStdout,
 										FOREGROUND_BLUE |
 										FOREGROUND_GREEN |

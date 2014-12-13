@@ -52,7 +52,7 @@ void Swatch::Run(const std::vector<std::string>& Args)
 				SwatchName = SwatchName.substr(
 					0,
 					SwatchName.find_last_of('.'));
-				std::cout << "-" << SwatchName << std::endl;
+				std::cout << 'Ä' << SwatchName << std::endl;
 			}
 		} while( FindNextFile(hFind, &Finder) != 0 );
 	}
