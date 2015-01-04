@@ -125,7 +125,7 @@ void Test::Run(const std::vector<std::string>& Args)
 			Dump << std::setw(16) << "PressureFlags: "
 				<< std::setw(16) << out << std::endl;
 
-			Dump << "---------------------------------------" << std::endl;
+			Dump << std::string(48, 'Ä') << std::endl;
 		}
 	}
 
